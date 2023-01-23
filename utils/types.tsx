@@ -4,7 +4,7 @@ export type fetchMovies={
     title: string
     genre: string
     year: number
-  }Boolean!
+}
 export type fetchGames={
     _id: string
     image_url: string
