@@ -1,8 +1,9 @@
 import axios from "axios"
 // import 'dotenv/config'
+import { graphQLFetchGames, graphQLFetchMovies, graphQLUserInputData } from "./types"
 export const getDataMovies = (input:string) => {
     console.log(process.env.NEXT_PUBLIC_GRAPHQL)
-    return axios.post(process.env.NEXT_PUBLIC_GRAPHQL, {
+    return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json'
         },
@@ -14,7 +15,7 @@ export const getDataMovies = (input:string) => {
     })
 }
 export const getDataGames = (input:string) => {
-    return axios.post(process.env.NEXT_PUBLIC_GRAPHQL, {
+    return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json'
         },
@@ -25,8 +26,8 @@ export const getDataGames = (input:string) => {
           }`
     })
 }
-export const registration = (input:string) => {
-    return axios.post(process.env.NEXT_PUBLIC_GRAPHQL, {
+export const registration = (input:graphQLUserInputData) => {
+    return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json'
         },
@@ -41,8 +42,8 @@ export const registration = (input:string) => {
           }`
     })
 }
-export const login = (input:string) => {
-    return axios.post(process.env.NEXT_PUBLIC_GRAPHQL, {
+export const login = (input:graphQLUserInputData) => {
+    return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json'
         },
@@ -56,8 +57,8 @@ export const login = (input:string) => {
           }`
     })
 }
-export const changePassword = (input:string, token:string) => {
-    return axios.post(process.env.NEXT_PUBLIC_GRAPHQL, {
+export const changePassword = (input:graphQLUserInputData, token:string) => {
+    return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': token
@@ -99,7 +100,7 @@ export const getDataMovie = (id:string, input:string) => {
           }`
     })
 }
-export const putDataGame = (id:string, input:string, token:string) => {
+export const putDataGame = (id:string, input:graphQLFetchGames, token:string) => {
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}/${id}`, {
         headers: {
             'Content-Type': 'application/json',
@@ -122,7 +123,7 @@ export const putDataGame = (id:string, input:string, token:string) => {
               }`
     })
 }
-export const putDataMovie = (id:string, input:string, token:string) => {
+export const putDataMovie = (id:string, input:graphQLFetchMovies, token:string) => {
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}/${id}`, {
         headers: {
             'Content-Type': 'application/json',
@@ -146,8 +147,8 @@ export const putDataMovie = (id:string, input:string, token:string) => {
               }`
     })
 }
-export const postDataGame = (input:string, token:string) => {
-    return axios.post(process.env.NEXT_PUBLIC_GRAPHQL, {
+export const postDataGame = (input:graphQLFetchGames, token:string) => {
+    return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': token
@@ -168,8 +169,8 @@ export const postDataGame = (input:string, token:string) => {
               }`
     })
 }
-export const postDataMovie = (input:string, token:string) => {
-    return axios.post(process.env.NEXT_PUBLIC_GRAPHQL, {
+export const postDataMovie = (input:graphQLFetchMovies, token:string) => {
+    return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': token
@@ -192,7 +193,7 @@ export const postDataMovie = (input:string, token:string) => {
     })
 }
 export const deleteDataGame = (id:string, token:string) => {
-    return axios.post(process.env.NEXT_PUBLIC_GRAPHQL, {
+    return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': token
@@ -206,7 +207,7 @@ export const deleteDataGame = (id:string, token:string) => {
     })
 }
 export const deleteDataMovie = (id:string, token:string) => {
-    return axios.post(process.env.NEXT_PUBLIC_GRAPHQL, {
+    return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': token
