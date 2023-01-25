@@ -1,34 +1,36 @@
 import { useContext,useRef,useState } from "react"
 import { UserContext } from "../statemanagement/userContext"
-import { typeLogin } from "../utils/types";
+import { typeRegister } from "../utils/types";
 import { useFormik } from 'formik'
-import { login } from '../utils'
+import { changePassword } from '../utils'
 import { TextField,Box,Button } from "@mui/material";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-const Login = () => {
+const ChangePassword = () => {
   const [loading,setLoading]=useState<boolean>(false)
   const trigger=useRef({
     email:false,
-    password:false
+    password:false,
+    confirm:false
   })
   const context = useContext(UserContext)
   const setUser = context.setUser
-  const formik= useFormik<typeLogin>({
+  const user=context.user
+  const formik= useFormik<typeRegister>({
     initialValues: {
-      email: "",
-      password: ""
+      email: user,
+      password: "",
+      confirm:""
     },
     onSubmit: (): void => {},
   })
-  const handleLogin = async (e:React.FormEvent) => {
+  const handleRegister = async (e:React.FormEvent) => {
+    console.log("formik:",formik.values)
     setLoading(true)
     e.preventDefault()
     try {
-      const result = await login(formik.values)
-      localStorage.setItem('userId', result.data.data.login.user)
-      localStorage.setItem('token', result.data.data.login.token)
-      setUser(result.data.data.login.user)
+      await changePassword(formik.values,localStorage.getItem('token'))
+      alert("Password Changed")
     }
     catch (err:any) {
       alert(err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
@@ -45,31 +47,6 @@ const Login = () => {
     </Backdrop>
       <Box sx={{ margin: "0 auto", width: "400px", padding: "50px" }}>
         <Box component="form" >
-          <TextField 
-            required 
-            onFocus={()=>{
-              trigger.current.email=true
-              console.log(trigger)
-            }}
-            error={
-              !formik.values.email.includes("@") && trigger.current.email ?
-              true :
-              false
-            }
-            helperText={
-              !formik.values.email.includes("@") && trigger.current.email ?
-              "Please input a valid email" :
-              "" 
-            }
-            size="small"
-            label="Email"
-            type="email" 
-            name="email" 
-            onChange={formik.handleChange} 
-            value={formik.values.email} 
-            sx={{marginBottom:"20px"}}
-          />
-          <br />
           <TextField 
             required 
             onFocus={()=>{
@@ -95,13 +72,38 @@ const Login = () => {
             sx={{marginBottom:"20px"}}
           />
           <br />
+          <TextField 
+            required 
+            onFocus={()=>{
+              trigger.current.confirm=true
+              console.log(trigger)
+            }}
+            error={
+              formik.values.confirm!=formik.values.password && trigger.current.confirm ?
+              true :
+              false
+            }
+            helperText={
+                formik.values.confirm!=formik.values.password && trigger.current.confirm ?
+              "Password don't match" :
+              "" 
+            }
+            size="small"
+            label="Confirm"
+            type="password" 
+            name="confirm" 
+            onChange={formik.handleChange} 
+            value={formik.values.confirm} 
+            sx={{marginBottom:"20px"}}
+          />
+          <br />
           <Button 
             component="label"
             variant="contained"
             size="small"
-            onClick={handleLogin}
+            onClick={handleRegister}
           >
-            Login
+            Change Password
             <input hidden type="submit"/>
           </Button>
         </Box>
@@ -110,4 +112,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default ChangePassword

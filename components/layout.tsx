@@ -31,6 +31,7 @@ import Collapse from '@mui/material/Collapse';
 import KeyIcon from '@mui/icons-material/Key';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import MovieIcon from '@mui/icons-material/Movie';
+import { useRouter } from 'next/router'
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -103,13 +104,19 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function Layout(props:typeProps) {
+  let history = useRouter();
   const theme = useTheme();
   const [open, setOpen] = useState<boolean>(false);
   const [openAccordion, setOpenAccordion] = useState({
     user:false,
     editor:false
   });
-
+  const handleLogout = () => {
+    localStorage.removeItem('userId')
+    localStorage.removeItem('token')
+    setUser(null)
+    history.push(`/`)
+  }
   const handleClick = (input:"user"|"editor") => {
     if (input=="user"){
       setOpenAccordion({
@@ -209,15 +216,17 @@ export default function Layout(props:typeProps) {
               </ListItemButton>
               <Collapse in={openAccordion.user} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
+                  <Link href="/changepassword">
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
                       <KeyIcon />
                     </ListItemIcon>
                     <ListItemText primary="Change Password" />
                   </ListItemButton>
+                  </Link>
                 </List>
                 <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemButton sx={{ pl: 4 }} onClick={handleLogout}>
                     <ListItemIcon>
                       <LogoutIcon />
                     </ListItemIcon>

@@ -57,11 +57,12 @@ export type typeProps={
   children:React.ReactNode
 }
 
-export type initialValues={
+export type typeRegister={
+  email:string|null
+  password:string
+  confirm:string
+}
+export type typeLogin={
   email:string
   password:string
-}
-export type formik={
-  initialValues:initialValues
-  onSubmit:()=>void
 }

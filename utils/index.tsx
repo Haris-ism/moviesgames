@@ -1,6 +1,6 @@
 import axios from "axios"
 // import 'dotenv/config'
-import { graphQLFetchGames, graphQLFetchMovies, graphQLUserInputData,graphQLLogin } from "./types"
+import { graphQLFetchGames, graphQLFetchMovies, graphQLUserInputData,graphQLLogin,typeRegister } from "./types"
 export const getDataMovies = (input:string) => {
     console.log(process.env.NEXT_PUBLIC_GRAPHQL)
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
@@ -26,7 +26,7 @@ export const getDataGames = (input:string) => {
           }`
     })
 }
-export const registration = (input:graphQLUserInputData) => {
+export const registration = (input:typeRegister) => {
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json'
@@ -57,7 +57,7 @@ export const login = (input:graphQLLogin) => {
           }`
     })
 }
-export const changePassword = (input:graphQLUserInputData, token:string) => {
+export const changePassword = (input:typeRegister, token:string|null) => {
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json',
@@ -67,8 +67,8 @@ export const changePassword = (input:graphQLUserInputData, token:string) => {
         mutation{
             changePassword(
               email:"${input.email}",
-              password:"${input.newPassword}",
-              confirmPassword:"${input.confirmPassword}"
+              password:"${input.password}",
+              confirmPassword:"${input.confirm}"
             ){
               password email
             }
