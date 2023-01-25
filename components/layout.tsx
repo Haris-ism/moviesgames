@@ -3,7 +3,8 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import KeyboardIcon from '@mui/icons-material/Keyboard';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -18,8 +19,18 @@ import ListItemText from '@mui/material/ListItemText';
 import { CSSObject, styled, Theme, useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import * as React from 'react';
-
+import {useState,useEffect} from 'react';
+import Link from 'next/link';
+import { useContext,useRef } from "react"
+import { UserContext } from "../statemanagement/userContext"
+import { typeProps } from "../utils/types";
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Collapse from '@mui/material/Collapse';
+import KeyIcon from '@mui/icons-material/Key';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import MovieIcon from '@mui/icons-material/Movie';
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -91,9 +102,35 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function MiniDrawer(props) {
+export default function Layout(props:typeProps) {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [openAccordion, setOpenAccordion] = useState({
+    user:false,
+    editor:false
+  });
+
+  const handleClick = (input:"user"|"editor") => {
+    if (input=="user"){
+      setOpenAccordion({
+        ...openAccordion,
+        user:!openAccordion.user
+      });
+    }
+    if (input=="editor"){
+      setOpenAccordion({
+        ...openAccordion,
+        editor:!openAccordion.editor
+      });
+    }
+
+    }
+  const context = useContext(UserContext)
+  const setUser = context.setUser
+  const user=context.user
+  useEffect(()=>{
+    if (localStorage.getItem('userId')) setUser(localStorage.getItem('userId'))
+  },[])
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -101,6 +138,10 @@ export default function MiniDrawer(props) {
 
   const handleDrawerClose = () => {
     setOpen(false);
+    setOpenAccordion({
+      user:false,
+      editor:false
+    });
   };
 
   return (
@@ -132,28 +173,61 @@ export default function MiniDrawer(props) {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
-          <ListItem key={1} disablePadding sx={{ display: 'block' }}>
+        { user ?
+          <>
+          <List>
+            <ListItem key={1} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                 }}
-              >
+                onClick={()=>handleClick("user")}
+                >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
                   }}
-                >
-                  <LoginIcon /> 
+                  >
+                  <AccountCircleIcon /> 
                 </ListItemIcon>
-                <ListItemText primary={"Login"} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={"User"} sx={{ opacity: open ? 1 : 0 }} />
+                  {
+                    open ? 
+                    <>
+                      {
+                        openAccordion.user ? 
+                        <ExpandLess/> : 
+                        <ExpandMore /> 
+                      }
+                    </> : 
+                    null
+                  }
               </ListItemButton>
+              <Collapse in={openAccordion.user} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon>
+                      <KeyIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Change Password" />
+                  </ListItemButton>
+                </List>
+                <List component="div" disablePadding>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon>
+                      <LogoutIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                  </ListItemButton>
+                </List>
+              </Collapse>
           </ListItem>
         </List>
+        
         <List>
           <ListItem key={2} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
@@ -162,20 +236,102 @@ export default function MiniDrawer(props) {
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                 }}
-              >
+                onClick={()=>handleClick("editor")}
+                >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
                   }}
+                  >
+                  <KeyboardIcon /> 
+                </ListItemIcon>
+                <ListItemText primary={"Editor"} sx={{ opacity: open ? 1 : 0 }} />
+                {
+                    open ? 
+                    <>
+                      {
+                        openAccordion.editor ? 
+                        <ExpandLess/> : 
+                        <ExpandMore /> 
+                      }
+                    </> : 
+                    null
+                  }
+              </ListItemButton>
+              <Collapse in={openAccordion.editor} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon>
+                      <SportsEsportsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Games" />
+                  </ListItemButton>
+                </List>
+                <List component="div" disablePadding>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon>
+                      <MovieIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Movies" />
+                  </ListItemButton>
+                </List>
+              </Collapse>
+          </ListItem>
+        </List>
+        </> :
+          <>
+          <List>
+            <ListItem key={1} disablePadding sx={{ display: 'block' }}>
+              <Link href="/login" style={{display:"flex",alignItems:"center"}}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
                 >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                  >
+                  <LoginIcon /> 
+                </ListItemIcon>
+                <ListItemText primary={"Login"} sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+              </Link>
+          </ListItem>
+        </List>
+        <List>
+          <ListItem key={2} disablePadding sx={{ display: 'block' }}>
+            <Link href="/register" style={{display:"flex",alignItems:"center"}}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+                >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                  >
                   <PersonAddAlt1Icon /> 
                 </ListItemIcon>
                 <ListItemText primary={"Register"} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
+              </Link>
           </ListItem>
         </List>
+        </>
+      }
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
       <DrawerHeader />

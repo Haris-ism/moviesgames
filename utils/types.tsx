@@ -1,3 +1,4 @@
+import React from 'react'
 export type fetchMovies={
     _id: string
     image_url: string
@@ -16,6 +17,10 @@ export type graphQLUserInputData={
   password: string
   newPassword: string
   confirmPassword: string
+}
+export type graphQLLogin={
+  email: string
+  password: string
 }
 export type graphQLFetchMovies={
   title:string
@@ -41,4 +46,22 @@ export type graphQLFetchGames={
   _id:string
   createdAt:string
   updatedAt:string
+}
+
+export type contextStates={
+  user:string|null
+  setUser:React.Dispatch<React.SetStateAction<string | null>>
+}
+
+export type typeProps={
+  children:React.ReactNode
+}
+
+export type initialValues={
+  email:string
+  password:string
+}
+export type formik={
+  initialValues:initialValues
+  onSubmit:()=>void
 }
