@@ -1,16 +1,16 @@
 import React from 'react'
 export type fetchMovies={
-    _id: string
-    image_url: string
-    title: string
-    genre: string
-    year: number
+  _id: string
+  image_url: string
+  title: string
+  genre: string
+  year: number
 }
 export type fetchGames={
-    _id: string
-    image_url: string
-    name: string
-    platform: string
+  _id: string
+  image_url: string
+  name: string
+  platform: string
 }
 export type graphQLUserInputData={
   email: string
@@ -65,4 +65,9 @@ export type typeRegister={
 export type typeLogin={
   email:string
   password:string
+}
+export type typeGamesTable ={
+  id: 'no' | 'img_url' | 'name' | 'genre' | 'type' | 'platform' | 'release' | 'action';
+  label: string;
+  minWidth?: number;
 }

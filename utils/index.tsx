@@ -192,7 +192,7 @@ export const postDataMovie = (input:graphQLFetchMovies, token:string) => {
               }`
     })
 }
-export const deleteDataGame = (id:string, token:string) => {
+export const deleteDataGame = (id:string, token:string|null) => {
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json',

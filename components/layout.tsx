@@ -271,20 +271,24 @@ export default function Layout(props:typeProps) {
               </ListItemButton>
               <Collapse in={openAccordion.editor} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
+                  <Link href="/auth/games">
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
                       <SportsEsportsIcon />
                     </ListItemIcon>
                     <ListItemText primary="Games" />
                   </ListItemButton>
+                  </Link>
                 </List>
                 <List component="div" disablePadding>
+                <Link href="/auth/movies">
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
                       <MovieIcon />
                     </ListItemIcon>
                     <ListItemText primary="Movies" />
                   </ListItemButton>
+                </Link>
                 </List>
               </Collapse>
           </ListItem>
