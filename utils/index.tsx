@@ -1,6 +1,6 @@
 import axios from "axios"
 // import 'dotenv/config'
-import { graphQLFetchGames, graphQLFetchMovies, graphQLUserInputData,graphQLLogin,typeRegister } from "./types"
+import { typePostDataGame,graphQLFetchGames,typePutDataGame, graphQLFetchMovies, graphQLUserInputData,graphQLLogin,typeRegister } from "./types"
 export const getDataMovies = (input:string) => {
     console.log(process.env.NEXT_PUBLIC_GRAPHQL)
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
@@ -100,7 +100,7 @@ export const getDataMovie = (id:string, input:string) => {
           }`
     })
 }
-export const putDataGame = (id:string, input:graphQLFetchGames, token:string) => {
+export const putDataGame = (id:string, input:typePutDataGame, token:string|null) => {
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}/${id}`, {
         headers: {
             'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ export const putDataMovie = (id:string, input:graphQLFetchMovies, token:string) 
               }`
     })
 }
-export const postDataGame = (input:graphQLFetchGames, token:string) => {
+export const postDataGame = (input:typePostDataGame, token:string|null) => {
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ export const postDataGame = (input:graphQLFetchGames, token:string) => {
               }`
     })
 }
-export const postDataMovie = (input:graphQLFetchMovies, token:string) => {
+export const postDataMovie = (input:graphQLFetchMovies, token:string|null) => {
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json',

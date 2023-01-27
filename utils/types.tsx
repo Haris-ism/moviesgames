@@ -51,6 +51,8 @@ export type graphQLFetchGames={
 export type contextStates={
   user:string|null
   setUser:React.Dispatch<React.SetStateAction<string | null>>
+  token:string|null
+  setToken:React.Dispatch<React.SetStateAction<string | null>>
 }
 
 export type typeProps={
@@ -70,4 +72,30 @@ export type typeGamesTable ={
   id: 'no' | 'img_url' | 'name' | 'genre' | 'type' | 'platform' | 'release' | 'action';
   label: string;
   minWidth?: number;
+}
+
+export type typePostDataGame={
+  name:string
+  genre:string
+  image_url:string
+  singlePlayer:boolean
+  multiPlayer:boolean
+  platform:string
+  release:number
+}
+export type typePutDataGame={
+  name:string
+  genre:string
+  image_url:string
+  singlePlayer:boolean
+  multiPlayer:boolean
+  platform:string
+  release:number
+}
+export type typeModalProps={
+  formik:any
+  open:boolean
+  handleClose:()=>void
+  handleSubmit:(e:any)=>void
+  mode:"create"|"edit"
 }

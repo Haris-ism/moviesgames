@@ -4,9 +4,12 @@ export const UserContext = createContext<contextStates>({} as contextStates);
 export const UserProvider = (props:typeProps) => {
 //   const [user, setUser] = useState<contextStates["user"]>(null);
   const [user, setUser] = useState<string|null>(null);
+  const [token, setToken] = useState<string|null>(null);
   const state:contextStates = {
     user: user,
-    setUser: setUser
+    setUser: setUser,
+    token:token,
+    setToken:setToken
   }
   return (
     <UserContext.Provider value={state}>

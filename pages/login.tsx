@@ -14,6 +14,8 @@ const Login = () => {
   })
   const context = useContext(UserContext)
   const setUser = context.setUser
+  const token = context.token
+  const setToken=context.setToken
   const formik= useFormik<typeLogin>({
     initialValues: {
       email: "",
@@ -26,9 +28,11 @@ const Login = () => {
     e.preventDefault()
     try {
       const result = await login(formik.values)
+      console.log("result:",result.data.data.login)
       localStorage.setItem('userId', result.data.data.login.user)
       localStorage.setItem('token', result.data.data.login.token)
       setUser(result.data.data.login.user)
+      setToken(result.data.data.login.token)
     }
     catch (err:any) {
       alert(err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")

@@ -115,6 +115,7 @@ export default function Layout(props:typeProps) {
     localStorage.removeItem('userId')
     localStorage.removeItem('token')
     setUser(null)
+    setToken(null)
     history.push(`/`)
   }
   const handleClick = (input:"user"|"editor") => {
@@ -135,8 +136,13 @@ export default function Layout(props:typeProps) {
   const context = useContext(UserContext)
   const setUser = context.setUser
   const user=context.user
+  const token = context.token
+  const setToken=context.setToken
   useEffect(()=>{
-    if (localStorage.getItem('userId')) setUser(localStorage.getItem('userId'))
+    if (localStorage.getItem('userId')) {
+      setUser(localStorage.getItem('userId'))
+      setToken(localStorage.getItem('token'))
+    }
   },[])
 
   const handleDrawerOpen = () => {
