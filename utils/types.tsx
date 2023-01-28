@@ -98,4 +98,11 @@ export type typeModalProps={
   handleClose:()=>void
   handleSubmit:(e:any)=>void
   mode:"create"|"edit"
+  setSnackBar:React.Dispatch<React.SetStateAction<typeSnackBar>>
+}
+
+export type typeSnackBar={
+  trigger:boolean
+  severity:string
+  message:string
 }

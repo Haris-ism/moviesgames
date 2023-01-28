@@ -1,10 +1,14 @@
-import * as React from 'react';
-import {useEffect,useState,useRef,useContext} from 'react'
+import AddIcon from '@mui/icons-material/Add';
+import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
-import {Button,Box,Grid,TextField,OutlinedInput } from '@mui/material';
-import InputBase from '@mui/material/InputBase';
+import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
+import { Alert, Box, Button, Grid, Snackbar } from '@mui/material';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import Fab from '@mui/material/Fab';
 import IconButton from '@mui/material/IconButton';
+import InputBase from '@mui/material/InputBase';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,30 +16,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { getDataGames, deleteDataGame } from '../../utils';
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
-import Image from 'next/image'
-import DeleteIcon from '@mui/icons-material/Delete';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import EditIcon from '@mui/icons-material/Edit';
-import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
-import { useRouter } from 'next/router'
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import { useFormik } from 'formik'
-import Checkbox from '@mui/material/Checkbox';
-import Backdrop from '@mui/material/Backdrop';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import CircularProgress from '@mui/material/CircularProgress';
-import { UserContext } from "../../statemanagement/userContext"
-import {typePostDataGame} from '../../utils/types'
-import { postDataGame,putDataGame } from '../../utils';
-import ModalComp from '../../components/modal'
-import { fetchGames, graphQLFetchGames,typeGamesTable } from '../../utils/types';
+import { useFormik } from 'formik';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import ModalComp from '../../components/modal';
+import { UserContext } from "../../statemanagement/userContext";
+import { deleteDataGame, getDataGames, postDataGame, putDataGame } from '../../utils';
+import { graphQLFetchGames, typeGamesTable, typeSnackBar } from '../../utils/types';
 const columns: readonly typeGamesTable[] = [
   { id: 'no', label: 'No', minWidth: 10 },
   { id: 'img_url', label: 'Image', minWidth: 150 },
@@ -48,17 +36,6 @@ const columns: readonly typeGamesTable[] = [
 
 ];
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    // width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  };
 export default function StickyHeadTable() {
   const [games, setGames] = useState<graphQLFetchGames[]>([])
   const [page, setPage] = useState<number>(0);
@@ -67,6 +44,11 @@ export default function StickyHeadTable() {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [tempGames,setTempGames]=useState<graphQLFetchGames[]>([])
   const [modalMode,setModalMode]=useState<"create"|"edit">("create")
+  const [snackBar,setSnackBar]=useState<typeSnackBar>({
+    trigger:false,
+    severity:"error",
+    message:"Data Not Found"
+  })
   const context = useContext(UserContext)
   const setUser = context.setUser
   const user=context.user
@@ -97,7 +79,7 @@ export default function StickyHeadTable() {
   const handleClose = () => setOpen(false);
   const handleSubmit=async (e)=>{
     e.preventDefault()
-    console.log("formik:",formik.values)
+    setLoading(true)
     if (modalMode=="create"){
         try {
             await postDataGame({
@@ -109,14 +91,26 @@ export default function StickyHeadTable() {
               platform: formik.values.platform,
               release: formik.values.release
             }, token)
-            alert("Create Success")
+            setSnackBar({
+                trigger:true,
+                severity:"success",
+                message:"Create Success"
+            })
             handleGet()
           }
           catch (err:any) {
             if (err.response?.data?.errors[0]?.message !== 'Please Login') {
-              alert(err.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
+                setSnackBar({
+                    trigger:true,
+                    severity:"error",
+                    message:err.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later."
+                })
             } else {
-              alert("Session Expired, Please Login.")
+              setSnackBar({
+                trigger:true,
+                severity:"error",
+                message:"Session Expired, Please Login."
+                })
               localStorage.removeItem('token')
               localStorage.removeItem('userId')
               setUser(null)
@@ -124,6 +118,7 @@ export default function StickyHeadTable() {
               history.push(`/login`)
             }
           }
+          
     }
     if (modalMode=="edit"){
         try {
@@ -136,14 +131,26 @@ export default function StickyHeadTable() {
               singlePlayer: formik.values.singlePlayer,
               multiPlayer: formik.values.multiPlayer
             }, token)
-            alert('Edit Success')
+            setSnackBar({
+                trigger:true,
+                severity:"success",
+                message:"Edit Success"
+            })
             handleGet()
           }
           catch (err:any) {
             if (err.response?.data?.errors[0]?.message !== 'Please Login') {
-              alert(err.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
+                setSnackBar({
+                    trigger:true,
+                    severity:"error",
+                    message:err.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later."
+                })
             } else {
-              alert("Session Expired, Please Login.")
+              setSnackBar({
+                trigger:true,
+                severity:"error",
+                message:"Session Expired, Please Login."
+                })
               localStorage.removeItem('token')
               localStorage.removeItem('userId')
               history.push(`/login`)
@@ -153,19 +160,29 @@ export default function StickyHeadTable() {
   }
   const Action=({item})=>{
     const handleDelete = async () => {
-        console.log("id:",item._id)
-        console.log("token:",token)
-        console.log("user:",user)
         setLoading(true)
         try {
           await deleteDataGame(item._id, token)
+          setSnackBar({
+            trigger:true,
+            severity:"success",
+            message:"Delete Success"
+        })
           handleGet()
         }
         catch (err:any) {
-          if (err.response?.data?.errors[0]?.message !== 'Please Login') {
-            alert(err.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
-          } else {
-            alert("Session Expired, Please Login.")
+            if (err.response?.data?.errors[0]?.message !== 'Please Login') {
+                setSnackBar({
+                    trigger:true,
+                    severity:"error",
+                    message:err.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later."
+                })
+            } else {
+              setSnackBar({
+                trigger:true,
+                severity:"error",
+                message:"Session Expired, Please Login."
+                })
             localStorage.removeItem('token')
             localStorage.removeItem('userId')
             history.push(`/login`)
@@ -179,7 +196,6 @@ export default function StickyHeadTable() {
             formik.setFieldValue(key,item[key])
         }
         setOpen(true)
-        console.log("games formik:",formik.values)
       }
     return(
         <>
@@ -249,6 +265,12 @@ export default function StickyHeadTable() {
         // setTempGames(games)
         setGames(searchVal)
         setPage(0)
+    }else{
+        setSnackBar({
+            trigger:true,
+            severity:"error",
+            message:"Data Not Found"
+        })
     }
   }
   const formik= useFormik<graphQLFetchGames>({
@@ -266,123 +288,24 @@ export default function StickyHeadTable() {
     },
     onSubmit: (): void => {},
   })
+  const handleSnackBarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBar({
+      ...snackBar,
+      trigger:false,
+    })
+  };
   return (
     <>
     <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 99 }}
         open={loading}
     >
         <CircularProgress color="inherit" />
     </Backdrop>
-    {/* <Modal
-        open={open}
-        onClose={handleClose}
-    >
-        <Box sx={style}>
-            <Box component="form" >
-                <TextField 
-                    required 
-                    // onFocus={()=>{
-                    //   trigger.current.email=true
-                    //   console.log(trigger)
-                    // }}
-                    // error={
-                    //   !formik.values.email.includes("@") && trigger.current.email ?
-                    //   true :
-                    //   false
-                    // }
-                    // helperText={
-                    //   !formik.values.email.includes("@") && trigger.current.email ?
-                    //   "Please input a valid email" :
-                    //   "" 
-                    // }
-                    size="small"
-                    label="Name"
-                    name="name" 
-                    onChange={formik.handleChange} 
-                    value={formik.values.name} 
-                    sx={{marginBottom:"20px"}}
-                />
-                <br />
-                <TextField 
-                    required
-                    size="small"
-                    label="Genre" 
-                    name="genre"
-                    value={formik.values.genre}
-                    onChange={formik.handleChange} 
-                    sx={{marginBottom:"20px"}}
-                />
-                <br />
-                <TextField 
-                    required
-                    size="small"
-                    label="Platform" 
-                    name="platform"
-                    value={formik.values.platform}
-                    onChange={formik.handleChange} 
-                    sx={{marginBottom:"20px"}}
-                />
-                <br />
-                <TextField 
-                    required
-                    size="small"
-                    label="Release Year" 
-                    name="release"
-                    type="number"
-                    value={formik.values.release}
-                    onChange={formik.handleChange} 
-                    sx={{marginBottom:"20px"}}
-                />
-                <br />
-                    <TextField 
-                        required
-                        size="small"
-                        label="Image Link" 
-                        name="image_url"
-                        value={formik.values.image_url}
-                        onChange={formik.handleChange} 
-                        sx={{marginBottom:"20px"}}
-                    />
-                <br/>
-                <FormControl >
-                    <FormLabel component="legend">Game Type</FormLabel>
-                    <FormGroup>
-                    <FormControlLabel
-                        control={
-                        <Checkbox />
-                        }
-                        label="Single Player"
-                        name="singlePlayer"
-                        checked={formik.values.singlePlayer}
-                        onChange={formik.handleChange} 
-
-                    />
-                    <FormControlLabel
-                        control={
-                        <Checkbox />
-                        }
-                        label="Multi Player"
-                        name="multiPlayer"
-                        checked={formik.values.multiPlayer}
-                        onChange={formik.handleChange} 
-                    />
-                    </FormGroup>
-                </FormControl>
-                <br />
-                <Button 
-                    component="label"
-                    variant="contained"
-                    size="small"
-                    onClick={handleSubmit}
-                >
-                    Submit
-                    <input hidden type="submit"/>
-                </Button>
-            </Box>
-        </Box>
-    </Modal> */}
-    <ModalComp formik={formik} open={open} handleClose={handleClose} handleSubmit={handleSubmit} mode={modalMode} />
+    <ModalComp formik={formik} open={open} handleClose={handleClose} handleSubmit={handleSubmit} mode={modalMode} setSnackBar={setSnackBar} />
     <Grid container sx={{ width: '100%', overflow: 'hidden',display:"flex",justifyContent:"center" }}>
         <Grid item sm={12} >
         <Box component="form" sx={{display:"flex",justifyContent:"center",alignItems:"center"}}>
@@ -541,6 +464,11 @@ export default function StickyHeadTable() {
             />
         </Grid>
     </Grid>
+    <Snackbar open={snackBar.trigger} autoHideDuration={4000} onClose={handleSnackBarClose}>
+        <Alert severity={snackBar.severity} sx={{ width: '100%' }}>
+            {snackBar.message}
+        </Alert>
+    </Snackbar>
     </>
   );
 }

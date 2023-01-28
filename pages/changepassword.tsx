@@ -1,13 +1,18 @@
-import { useContext,useRef,useState } from "react"
-import { UserContext } from "../statemanagement/userContext"
-import { typeRegister } from "../utils/types";
-import { useFormik } from 'formik'
-import { changePassword } from '../utils'
-import { TextField,Box,Button } from "@mui/material";
+import { Alert, Box, Button, Snackbar, TextField } from "@mui/material";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useFormik } from 'formik';
+import { useContext, useRef, useState } from "react";
+import { UserContext } from "../statemanagement/userContext";
+import { changePassword } from '../utils';
+import { typeRegister, typeSnackBar } from "../utils/types";
 const ChangePassword = () => {
   const [loading,setLoading]=useState<boolean>(false)
+  const [snackBar,setSnackBar]=useState<typeSnackBar>({
+    trigger:false,
+    severity:"error",
+    message:"Data Not Found"
+  })
   const trigger=useRef({
     email:false,
     password:false,
@@ -25,17 +30,48 @@ const ChangePassword = () => {
     onSubmit: (): void => {},
   })
   const handleRegister = async (e:React.FormEvent) => {
-    console.log("formik:",formik.values)
-    setLoading(true)
     e.preventDefault()
+    setLoading(true)
+    if (!handleCheckFormat()) {
+      setSnackBar({
+        trigger:true,
+        severity:"error",
+        message:"Please Fill With A Valid Inputs"
+      })
+      setLoading(false)
+      return
+    }
     try {
       await changePassword(formik.values,localStorage.getItem('token'))
-      alert("Password Changed")
+      setSnackBar({
+        trigger:true,
+        severity:"success",
+        message:"Password Changed"
+      })
     }
     catch (err:any) {
-      alert(err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
+      setSnackBar({
+        trigger:true,
+        severity:"error",
+        message:err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later."
+      })
     }
     setLoading(false)
+  }
+  const handleSnackBarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBar({
+      ...snackBar,
+      trigger:false,
+    })
+  };
+  const handleCheckFormat=():boolean=>{
+    if (formik.values.confirm!=formik.values.password||!(formik.values.password.length>=6)){
+      return false
+    }
+    return true
   }
   return (
     <>
@@ -108,6 +144,11 @@ const ChangePassword = () => {
           </Button>
         </Box>
       </Box>
+      <Snackbar open={snackBar.trigger} autoHideDuration={4000} onClose={handleSnackBarClose}>
+        <Alert severity={snackBar.severity} sx={{ width: '100%' }}>
+          {snackBar.message}
+        </Alert>
+      </Snackbar>
     </>
   )
 }

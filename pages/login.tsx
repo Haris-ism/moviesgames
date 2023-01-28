@@ -1,20 +1,29 @@
-import { useContext,useRef,useState } from "react"
-import { UserContext } from "../statemanagement/userContext"
-import { typeLogin } from "../utils/types";
-import { useFormik } from 'formik'
-import { login } from '../utils'
-import { TextField,Box,Button } from "@mui/material";
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import {
+  Alert, Backdrop, Box,
+  Button, CircularProgress, Snackbar, TextField
+} from "@mui/material";
+import { useFormik } from 'formik';
+import { useRouter } from 'next/router';
+import { SyntheticEvent, useContext, useRef, useState } from "react";
+import { UserContext } from "../statemanagement/userContext";
+import { login } from '../utils';
+import { typeLogin, typeSnackBar } from "../utils/types";
+
 const Login = () => {
   const [loading,setLoading]=useState<boolean>(false)
+  const [snackBar,setSnackBar]=useState<typeSnackBar>({
+    trigger:false,
+    severity:"error",
+    message:"Data Not Found"
+  })
   const trigger=useRef({
     email:false,
     password:false
   })
+  let history = useRouter();
   const context = useContext(UserContext)
   const setUser = context.setUser
-  const token = context.token
+  // const token = context.token
   const setToken=context.setToken
   const formik= useFormik<typeLogin>({
     initialValues: {
@@ -23,22 +32,57 @@ const Login = () => {
     },
     onSubmit: (): void => {},
   })
+  const handleCheckFormat=():boolean=>{
+    if (!formik.values.email.includes("@")||!(formik.values.password.length>=6)){
+      return false
+    }
+    return true
+  }
   const handleLogin = async (e:React.FormEvent) => {
-    setLoading(true)
     e.preventDefault()
+    setLoading(true)
+    if (!handleCheckFormat()) {
+      setSnackBar({
+        trigger:true,
+        severity:"error",
+        message:"Please Fill With A Valid Inputs"
+      })
+      setLoading(false)
+      return
+    }
     try {
       const result = await login(formik.values)
-      console.log("result:",result.data.data.login)
-      localStorage.setItem('userId', result.data.data.login.user)
-      localStorage.setItem('token', result.data.data.login.token)
-      setUser(result.data.data.login.user)
-      setToken(result.data.data.login.token)
+      localStorage.setItem('userId', result?.data?.data?.login?.user)
+      localStorage.setItem('token', result?.data?.data?.login?.token)
+      setUser(result?.data?.data?.login?.user)
+      setToken(result?.data?.data?.login?.token)
+      setSnackBar({
+        trigger:true,
+        severity:"success",
+        message:"Login Success!"
+      })
+      setTimeout(()=>{
+        history.push("/")
+      },1000)
     }
     catch (err:any) {
-      alert(err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
+      setSnackBar({
+        trigger:true,
+        severity:"error",
+        message:err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later."
+      })
     }
     setLoading(false)
   }
+  const handleSnackBarClose = (event: SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBar({
+      ...snackBar,
+      trigger:false,
+    })
+  };
   return (
     <>
     <Backdrop
@@ -53,7 +97,6 @@ const Login = () => {
             required 
             onFocus={()=>{
               trigger.current.email=true
-              console.log(trigger)
             }}
             error={
               !formik.values.email.includes("@") && trigger.current.email ?
@@ -78,7 +121,6 @@ const Login = () => {
             required 
             onFocus={()=>{
               trigger.current.password=true
-              console.log(trigger)
             }}
             error={
               !(formik.values.password.length>=6) && trigger.current.password ?
@@ -110,6 +152,11 @@ const Login = () => {
           </Button>
         </Box>
       </Box>
+      <Snackbar open={snackBar.trigger} autoHideDuration={4000} onClose={handleSnackBarClose}>
+        <Alert severity={snackBar.severity} sx={{ width: '100%' }}>
+          {snackBar.message}
+        </Alert>
+      </Snackbar>
     </>
   )
 }

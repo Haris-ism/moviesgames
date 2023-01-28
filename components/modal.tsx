@@ -1,18 +1,8 @@
-import { 
-    Box,
-    TextField,
-    FormControl,
-    FormLabel,
-    FormGroup,
-    Checkbox,
-    FormControlLabel,
-    Button,
-    Modal
- } from "@mui/material" 
-// import { useFormik } from 'formik'
-import {typeModalProps,typePostDataGame} from '../utils/types'
-const ModalComp=({formik,open,handleClose,handleSubmit,mode}:typeModalProps)=>{
-
+import {
+    Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Modal, TextField
+} from "@mui/material";
+import { typeModalProps } from '../utils/types';
+const ModalComp=({formik,open,handleClose,handleSubmit,mode,setSnackBar}:typeModalProps)=>{
     const style = {
         position: 'absolute' as 'absolute',
         top: '50%',
@@ -24,7 +14,6 @@ const ModalComp=({formik,open,handleClose,handleSubmit,mode}:typeModalProps)=>{
         boxShadow: 24,
         p: 4,
       };
-    console.log("modal:",formik.values)
     return(
     <>
     <Modal
