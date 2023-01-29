@@ -87,7 +87,6 @@ const ChangePassword = () => {
             required 
             onFocus={()=>{
               trigger.current.password=true
-              console.log(trigger)
             }}
             error={
               !(formik.values.password.length>=6) && trigger.current.password ?

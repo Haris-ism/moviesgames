@@ -299,6 +299,7 @@ const AuthGames=()=> {
         createdAt:"",
         updatedAt:""
     },
+    validateOnChange: false,
     onSubmit: (): void => {},
   })
   const handleSnackBarClose = (event: SyntheticEvent | Event, reason?: string) => {
@@ -313,7 +314,7 @@ const AuthGames=()=> {
   return (
     <>
     <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 99 }}
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
     >
         <CircularProgress color="inherit" />

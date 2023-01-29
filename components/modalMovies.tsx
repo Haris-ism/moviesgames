@@ -1,5 +1,5 @@
 import {
-    Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Modal, TextField
+    Box, Button, Modal, TextField
 } from "@mui/material";
 import { typeModalProps } from '../utils/types';
 const ModalComp=({formik,open,handleClose,handleSubmit,mode,setSnackBar}:typeModalProps)=>{
@@ -37,11 +37,11 @@ const ModalComp=({formik,open,handleClose,handleSubmit,mode,setSnackBar}:typeMod
                             //   "Please input a valid email" :
                             //   "" 
                             // }
-                    size="small"
-                    label="Name"
-                    name="name" 
-                    onChange={formik.handleChange} 
-                    value={formik.values.name} 
+                            size="small"
+                            label="Title"
+                            name="title" 
+                            onChange={formik.handleChange} 
+                    value={formik.values.title} 
                     sx={{marginBottom:"20px",width:"300px"}}
                     />
                 <br />
@@ -50,69 +50,76 @@ const ModalComp=({formik,open,handleClose,handleSubmit,mode,setSnackBar}:typeMod
                     size="small"
                     label="Genre" 
                     name="genre"
-                    multiline
                     value={formik.values.genre}
-                    onChange={(e)=>formik.setFieldValue(e.target.name,e.target.value)} 
+                    onChange={formik.handleChange} 
                     sx={{marginBottom:"20px",width:"300px"}}
                 />
-                <br />
+                <br/>
                 <TextField 
                     required
                     size="small"
-                    label="Platform" 
-                    name="platform"
-                    multiline
-                    value={formik.values.platform}
+                    label="Image Link" 
+                    name="image_url"
+                    value={formik.values.image_url}
                     onChange={formik.handleChange} 
                     sx={{marginBottom:"20px",width:"300px"}}
                     />
                 <br />
                 <TextField 
-                    required
-                    size="small"
-                    label="Release Year" 
-                    name="release"
-                    type="number"
-                    value={formik.values.release}
-                    onChange={formik.handleChange} 
-                    sx={{marginBottom:"20px",width:"300px"}}
-                    />
-                <br />
-                    <TextField 
                         required
                         size="small"
-                        label="Image Link" 
-                        name="image_url"
-                        value={formik.values.image_url}
+                        label="Description" 
+                        name="description"
+                        multiline
+                        value={formik.values.description}
                         onChange={formik.handleChange} 
                         sx={{marginBottom:"20px",width:"300px"}}
                         />
                 <br/>
-                <FormControl >
-                    <FormLabel component="legend">Game Type</FormLabel>
-                    <FormGroup>
-                    <FormControlLabel
-                        control={
-                            <Checkbox />
-                        }
-                        label="Single Player"
-                        name="singlePlayer"
-                        checked={formik.values.singlePlayer}
+                <TextField 
+                        required
+                        size="small"
+                        label="Review" 
+                        name="review"
+                        multiline
+                        value={formik.values.review}
                         onChange={formik.handleChange} 
-                        
+                        sx={{marginBottom:"20px",width:"300px"}}
                         />
-                    <FormControlLabel
-                        control={
-                            <Checkbox />
-                        }
-                        label="Multi Player"
-                        name="multiPlayer"
-                        checked={formik.values.multiPlayer}
-                        onChange={formik.handleChange} 
-                        />
-                    </FormGroup>
-                </FormControl>
+                <br/>
+                <TextField 
+                    required
+                    size="small"
+                    label="Rating" 
+                    name="rating"
+                    type="number"
+                    value={formik.values.rating}
+                    onChange={formik.handleChange} 
+                    sx={{marginBottom:"20px",width:"300px"}}
+                    />
                 <br />
+                <TextField 
+                    required
+                    size="small"
+                    label="Year" 
+                    name="year"
+                    type="number"
+                    value={formik.values.year}
+                    onChange={formik.handleChange} 
+                    sx={{marginBottom:"20px",width:"300px"}}
+                    />
+                <br />
+                <TextField 
+                    required
+                    size="small"
+                    label="Duration" 
+                    name="duration"
+                    type="number"
+                    value={formik.values.duration}
+                    onChange={formik.handleChange} 
+                    sx={{marginBottom:"20px",width:"300px"}}
+                    />
+                <br/>
                 {
                     mode=="create"?
                     <Button 

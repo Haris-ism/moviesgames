@@ -1,11 +1,11 @@
-import { useContext,useRef,useState } from "react"
-import { UserContext } from "../statemanagement/userContext"
-import { typeRegister } from "../utils/types";
-import { useFormik } from 'formik'
-import { registration } from '../utils'
-import { TextField,Box,Button } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useFormik } from 'formik';
+import { useContext, useRef, useState } from "react";
+import { UserContext } from "../statemanagement/userContext";
+import { registration } from '../utils';
+import { typeRegister } from "../utils/types";
 const Register = () => {
   const [loading,setLoading]=useState<boolean>(false)
   const trigger=useRef({
@@ -24,7 +24,6 @@ const Register = () => {
     onSubmit: (): void => {},
   })
   const handleRegister = async (e:React.FormEvent) => {
-    console.log("formik:",formik.values)
     setLoading(true)
     e.preventDefault()
     try {
@@ -53,12 +52,12 @@ const Register = () => {
               console.log(trigger)
             }}
             error={
-              !formik.values.email.includes("@") && trigger.current.email ?
+              !formik.values?.email?.includes("@") && trigger.current.email ?
               true :
               false
             }
             helperText={
-              !formik.values.email.includes("@") && trigger.current.email ?
+              !formik.values?.email?.includes("@") && trigger.current.email ?
               "Please input a valid email" :
               "" 
             }

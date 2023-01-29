@@ -25,10 +25,10 @@ import {
     useRef,
     useState
 } from 'react';
-import ModalComp from '../../components/modal';
+import ModalComp from '../../components/modalMovies';
 import { UserContext } from "../../statemanagement/userContext";
 import {
-    deleteDataGame,
+    deleteDataMovie,
     getDataMovies,
     postDataMovie,
     putDataMovie
@@ -81,13 +81,14 @@ const Authmovies=()=> {
   
   const handleOpen = () => {
     setModalMode("create")
-    formik.setFieldValue("name","")
-    formik.setFieldValue("genre","")
+    formik.setFieldValue("title","")
+    formik.setFieldValue("rating",0)
     formik.setFieldValue("image_url","")
-    formik.setFieldValue("singlePlayer",false)
-    formik.setFieldValue("multiPlayer",false)
-    formik.setFieldValue("platform","")
-    formik.setFieldValue("release",0)
+    formik.setFieldValue("genre","")
+    formik.setFieldValue("duration",0)
+    formik.setFieldValue("year",0)
+    formik.setFieldValue("review","")
+    formik.setFieldValue("description","")
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
@@ -178,8 +179,9 @@ const Authmovies=()=> {
   const Action=({item}:any)=>{
     const handleDelete = async () => {
         setLoading(true)
+        console.log("delete id:",item)
         try {
-          await deleteDataGame(item._id, token)
+          await deleteDataMovie(item._id, token)
           setSnackBar({
             trigger:true,
             severity:"success",
@@ -303,6 +305,7 @@ const Authmovies=()=> {
         createdAt:"",
         updatedAt:""
     },
+    validateOnChange: false,
     onSubmit: (): void => {},
   })
   const handleSnackBarClose = (event: SyntheticEvent | Event, reason?: string) => {
