@@ -3,27 +3,42 @@ import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-import { Alert, Box, Button, Grid, Snackbar } from '@mui/material';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
-import Fab from '@mui/material/Fab';
-import IconButton from '@mui/material/IconButton';
-import InputBase from '@mui/material/InputBase';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import {
+    Alert, Backdrop, Box,
+    Button, CircularProgress,
+    Fab, Grid, IconButton,
+    InputBase, Snackbar, Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow
+} from '@mui/material';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
-import * as React from 'react';
-import { useContext, useEffect, useRef, useState } from 'react';
+import {
+    ChangeEvent,
+    SyntheticEvent,
+    useContext,
+    useEffect,
+    useRef,
+    useState
+} from 'react';
 import ModalComp from '../../components/modal';
 import { UserContext } from "../../statemanagement/userContext";
-import { deleteDataGame, getDataGames, postDataGame, putDataGame } from '../../utils';
-import { graphQLFetchGames, typeGamesTable, typeSnackBar } from '../../utils/types';
+import {
+    deleteDataGame,
+    getDataGames,
+    postDataGame,
+    putDataGame
+} from '../../utils';
+import {
+    graphQLFetchGames,
+    typeGamesTable,
+    typeSnackBar
+} from '../../utils/types';
+
 const columns: readonly typeGamesTable[] = [
   { id: 'no', label: 'No', minWidth: 10 },
   { id: 'img_url', label: 'Image', minWidth: 150 },
@@ -36,7 +51,7 @@ const columns: readonly typeGamesTable[] = [
 
 ];
 
-export default function StickyHeadTable() {
+const AuthGames=()=> {
   const [games, setGames] = useState<graphQLFetchGames[]>([])
   const [page, setPage] = useState<number>(0);
   const [loading,setLoading]=useState<boolean>(true)
@@ -44,6 +59,7 @@ export default function StickyHeadTable() {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [tempGames,setTempGames]=useState<graphQLFetchGames[]>([])
   const [modalMode,setModalMode]=useState<"create"|"edit">("create")
+  const [open, setOpen] = useState<boolean>(false);
   const [snackBar,setSnackBar]=useState<typeSnackBar>({
     trigger:false,
     severity:"error",
@@ -51,10 +67,8 @@ export default function StickyHeadTable() {
   })
   const context = useContext(UserContext)
   const setUser = context.setUser
-  const user=context.user
   const token = context.token
   const setToken=context.setToken
-    console.log("loading",loading)
   let history = useRouter();
   const trigger=useRef({
     email:false,
@@ -64,7 +78,6 @@ export default function StickyHeadTable() {
     handleGet();
   }, [])
   
-  const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setModalMode("create")
     formik.setFieldValue("name","")
@@ -77,8 +90,9 @@ export default function StickyHeadTable() {
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
-  const handleSubmit=async (e)=>{
+  const handleSubmit=async (e:SyntheticEvent)=>{
     e.preventDefault()
+    handleClose()
     setLoading(true)
     if (modalMode=="create"){
         try {
@@ -96,7 +110,7 @@ export default function StickyHeadTable() {
                 severity:"success",
                 message:"Create Success"
             })
-            handleGet()
+            await handleGet()
           }
           catch (err:any) {
             if (err.response?.data?.errors[0]?.message !== 'Please Login') {
@@ -117,8 +131,7 @@ export default function StickyHeadTable() {
               setToken(null)
               history.push(`/login`)
             }
-          }
-          
+        }          
     }
     if (modalMode=="edit"){
         try {
@@ -136,7 +149,7 @@ export default function StickyHeadTable() {
                 severity:"success",
                 message:"Edit Success"
             })
-            handleGet()
+            await handleGet()
           }
           catch (err:any) {
             if (err.response?.data?.errors[0]?.message !== 'Please Login') {
@@ -157,8 +170,9 @@ export default function StickyHeadTable() {
             }
           }
     }
+    setLoading(false)
   }
-  const Action=({item})=>{
+  const Action=({item}:any)=>{
     const handleDelete = async () => {
         setLoading(true)
         try {
@@ -168,7 +182,7 @@ export default function StickyHeadTable() {
             severity:"success",
             message:"Delete Success"
         })
-          handleGet()
+          await handleGet()
         }
         catch (err:any) {
             if (err.response?.data?.errors[0]?.message !== 'Please Login') {
@@ -190,13 +204,13 @@ export default function StickyHeadTable() {
         }
         setLoading(false)
       }
-      const handleEdit=async()=>{
+    const handleEdit=async()=>{
         setModalMode("edit")
         for (let key in formik.values){
             formik.setFieldValue(key,item[key])
         }
         setOpen(true)
-      }
+    }
     return(
         <>
             <Button 
@@ -206,7 +220,6 @@ export default function StickyHeadTable() {
                 sx={{marginBottom:"10px"}}
                 onClick={handleEdit}
             >
-                {/* <EditIcon sx={{fontSize:"20px"}} /> */}
                 <BorderColorOutlinedIcon sx={{fontSize:"20px"}}/>
                 Edit
             </Button>
@@ -241,11 +254,11 @@ export default function StickyHeadTable() {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const handleChangeSearch=(e:React.ChangeEvent<HTMLInputElement>)=>{
+  const handleChangeSearch=(e:ChangeEvent<HTMLInputElement>)=>{
     setSearch(e.target.value)
     if (e.target.value==""){
         setGames(tempGames)
@@ -258,7 +271,7 @@ export default function StickyHeadTable() {
         setPage(0)
     }
   }
-  const handleSearch=(e)=>{
+  const handleSearch=(e:SyntheticEvent)=>{
     e.preventDefault()
     let searchVal=games.filter(item=>item.name.toLowerCase().includes(search))
     if (searchVal.length>0){
@@ -288,7 +301,7 @@ export default function StickyHeadTable() {
     },
     onSubmit: (): void => {},
   })
-  const handleSnackBarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+  const handleSnackBarClose = (event: SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -305,10 +318,30 @@ export default function StickyHeadTable() {
     >
         <CircularProgress color="inherit" />
     </Backdrop>
-    <ModalComp formik={formik} open={open} handleClose={handleClose} handleSubmit={handleSubmit} mode={modalMode} setSnackBar={setSnackBar} />
-    <Grid container sx={{ width: '100%', overflow: 'hidden',display:"flex",justifyContent:"center" }}>
+    <ModalComp 
+        formik={formik} 
+        open={open} 
+        handleClose={handleClose} 
+        handleSubmit={handleSubmit} 
+        mode={modalMode} 
+        setSnackBar={setSnackBar} 
+    />
+    <Grid 
+        container 
+        sx={{ 
+            width: '100%', 
+            overflow: 'hidden',
+            display:"flex",
+            justifyContent:"center" 
+            }}>
         <Grid item sm={12} >
-        <Box component="form" sx={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+        <Box 
+            component="form" 
+            sx={{
+                display:"flex",
+                justifyContent:"center",
+                alignItems:"center"
+                }}>
             <Box 
             sx={{
                 borderRadius:"3px",
@@ -332,21 +365,47 @@ export default function StickyHeadTable() {
                 />
                 {
                     search!="" ?
-                    <IconButton sx={{width:"10px",height:"10px"}} onClick={handleCancelSearch} >
+                    <IconButton 
+                        sx={{
+                            width:"10px",
+                            height:"10px"
+                            }} 
+                        onClick={handleCancelSearch} 
+                    >
                         <ClearIcon sx={{fontSize:"10px"}} />
                     </IconButton> :
                     null
 
                 }
             </Box>
-            <IconButton  sx={{ p: '10px' }} component="label" onClick={handleSearch}>
+            <IconButton  
+                sx={{ p: '10px' }} 
+                component="label" 
+                onClick={handleSearch}
+            >
                 <SearchIcon />
                 <input hidden type="submit"/>
             </IconButton>
         </Box>
         </Grid>
-        <Grid item sm={11} sx={{display:"flex",justifyContent:"right",alignItems:"center"}}>
-            <Fab color="primary" aria-label="add" sx={{width:"40px",height:"40px"}} onClick={handleOpen}>
+        <Grid 
+            item 
+            sm={11} 
+            sx={{
+                display:"flex",
+                justifyContent:"right",
+                alignItems:"center"
+                }}
+        >
+            <Fab 
+                color="primary" 
+                aria-label="add" 
+                sx={{
+                    width:"40px",
+                    height:"40px"
+                    }} 
+                onClick={handleOpen}
+            >
                 <AddIcon />
             </Fab>
         </Grid>
@@ -464,7 +523,11 @@ export default function StickyHeadTable() {
             />
         </Grid>
     </Grid>
-    <Snackbar open={snackBar.trigger} autoHideDuration={4000} onClose={handleSnackBarClose}>
+    <Snackbar 
+        open={snackBar.trigger} 
+        autoHideDuration={4000} 
+        onClose={handleSnackBarClose}
+    >
         <Alert severity={snackBar.severity} sx={{ width: '100%' }}>
             {snackBar.message}
         </Alert>
@@ -472,3 +535,5 @@ export default function StickyHeadTable() {
     </>
   );
 }
+
+export default AuthGames

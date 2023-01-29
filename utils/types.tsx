@@ -74,6 +74,21 @@ export type typeGamesTable ={
   minWidth?: number;
 }
 
+export type typeMoviesTable ={
+  id: 'no' | 'img_url' | 'title' | 'genre' | 'rating' | 'description' | 'year' | 'review' |'duration' |'action';
+  label: string;
+  minWidth?: number;
+}
+export type typePostDataMovie={
+  title:string
+  rating:number
+  image_url:string
+  genre:string
+  duration:number
+  year:number
+  review:string
+  description:string
+}
 export type typePostDataGame={
   name:string
   genre:string
@@ -103,6 +118,6 @@ export type typeModalProps={
 
 export type typeSnackBar={
   trigger:boolean
-  severity:string
+  severity:"success"|"error"|"warning"|"info"
   message:string
 }
