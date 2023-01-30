@@ -111,6 +111,7 @@ export default function Layout(props:typeProps) {
     user:false,
     editor:false
   });
+  console.log("open:",open)
   const handleLogout = () => {
     localStorage.removeItem('userId')
     localStorage.removeItem('token')
@@ -119,6 +120,7 @@ export default function Layout(props:typeProps) {
     history.push(`/`)
   }
   const handleClick = (input:"user"|"editor") => {
+    setOpen(true)
     if (input=="user"){
       setOpenAccordion({
         ...openAccordion,
@@ -189,7 +191,7 @@ export default function Layout(props:typeProps) {
         { user ?
           <>
           <List>
-            <ListItem key={1} disablePadding sx={{ display: 'block' }}>
+            <ListItem key={1} disablePadding sx={{ display: 'block'}}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -203,11 +205,12 @@ export default function Layout(props:typeProps) {
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
+
                   }}
                   >
                   <AccountCircleIcon /> 
                 </ListItemIcon>
-                <ListItemText primary={"User"} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={"User"} sx={{ opacity: open ? 1 : 0 }}  />
                   {
                     open ? 
                     <>
@@ -262,7 +265,7 @@ export default function Layout(props:typeProps) {
                   >
                   <KeyboardIcon /> 
                 </ListItemIcon>
-                <ListItemText primary={"Editor"} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={"Editor"} sx={{ opacity: open ? 1 : 0 }}  />
                 {
                     open ? 
                     <>

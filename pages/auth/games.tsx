@@ -16,6 +16,7 @@ import {
     TableRow
 } from '@mui/material';
 import { useFormik } from 'formik';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import {
     ChangeEvent,
@@ -41,7 +42,7 @@ import {
 
 const columns: readonly typeGamesTable[] = [
   { id: 'no', label: 'No', minWidth: 10 },
-  { id: 'img_url', label: 'Image', minWidth: 150 },
+  { id: 'img_url', label: 'Image', minWidth: 250 },
   { id: 'name', label: 'Name', minWidth: 100 },
   { id: 'genre', label: 'Genre', minWidth: 100 },
   { id: 'type', label: 'Type', minWidth: 100 },
@@ -240,7 +241,6 @@ const AuthGames=()=> {
     setLoading(true)
     try {
       const game = await getDataGames("_id image_url name genre singlePlayer multiPlayer platform release")
-      console.log("games:",game?.data?.data?.fetchGames)
       setGames(game?.data?.data?.fetchGames)
       setTempGames(game?.data?.data?.fetchGames)
 
@@ -443,12 +443,23 @@ const AuthGames=()=> {
                                 sx={{
                                     width:columns[1].minWidth
                                 }}
-                            >
-                                <img
-                                    src={item.image_url}
-                                    alt="euy"
-                                    width={columns[1].minWidth}
-                                />
+                            >   
+                                <Box 
+                                    sx={{
+                                        width:columns[1].minWidth,
+                                        height:"300px",
+                                        position: 'relative'
+                                        }}
+                                >
+                                    <Image 
+                                        // placeholder='blur'
+                                        loader={()=>item?.image_url} 
+                                        src={item?.image_url} 
+                                        alt="Failed To Get Image" 
+                                        fill
+                                        objectFit='contain' 
+                                        />
+                                </Box>
                             </TableCell>
                             <TableCell 
                                 sx={{

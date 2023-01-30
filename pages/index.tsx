@@ -11,37 +11,15 @@ import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 import { getDataGames, getDataMovies } from '../utils';
 import { fetchGames, fetchMovies } from '../utils/types';
+import Image from 'next/image';
+
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
-const Home=()=> {
-  const [open, setOpen] = useState<boolean>(true);
-  const [movies, setMovies] = useState<fetchMovies[]>([])
-  const [games, setGames] = useState<fetchGames[]>([])
+const Home=({movies,games}:any)=> {
+  // const [open, setOpen] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState<number>(0);
   const theme = useTheme();
-  const maxSteps = movies.length || 0;
-  
-  useEffect(() => {
-    handleGet();
-  }, [])
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleGet = async () => {
-    try {
-      const movie = await getDataMovies("_id genre image_url title year")
-      setMovies(movie?.data?.data?.fetchMovies)
-      const game = await getDataGames("_id name platform image_url")
-      setGames(game?.data?.data?.fetchGames)
-    }
-    catch (err:any) {
-      alert(err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
-    }
-    handleClose()
-  }
-
+  const maxSteps = movies?.length || 0;
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
@@ -63,13 +41,13 @@ const Home=()=> {
 
   return (
     <>
-    <Backdrop
+    {/* <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
         onClick={handleClose}
       >
         <CircularProgress color="inherit" />
-    </Backdrop>
+    </Backdrop> */}
     <Grid container >
       <Grid item sm={12} style={{backgroundColor:"#0288d1",borderRadius: "15px"}}>
         <AutoPlaySwipeableViews
@@ -80,11 +58,20 @@ const Home=()=> {
           >
           {
           movies.map((item:fetchMovies, index:number) => 
-           (
-                <div key={index}>
-                  <img className="carousel" src={item?.image_url}/>
+           (    
+            <div>
+                <div key={index} style={{borderRadius:"15px",width: '100%', height: '330px', position: 'relative'}}>
+                  <Image 
+                      // placeholder='blur'
+                      loader={()=>item?.image_url} 
+                      src={item?.image_url} 
+                      alt="Failed To Get Image" 
+                      fill
+                      objectFit='cover'
+                      />
+                  </div>
                   <div style={{ "textAlign": "center", "fontSize": "20px", color: "white" }}>{item?.title}</div>
-                </div>
+              </div>
             )
           )
         }
@@ -118,8 +105,16 @@ const Home=()=> {
             return (
               <div key={item?._id} className="cards" >
                 <Card style={{ borderRadius: "15px",padding: "0px" }}>
-                  <img src={item?.image_url} />
-                  <label >{truncateString(item?.title, 25)}</label>
+                <Image 
+                  // placeholder='blur'
+                  loader={()=>item?.image_url} 
+                  src={item?.image_url} 
+                  alt="Failed To Get Image" 
+                  width={220} 
+                  height={300} 
+                  
+                />
+                <label >{truncateString(item?.title, 25)}</label>
                   <br />
                   <label>Genre : {truncateString(item?.genre, 20)}</label>
                   <br />
@@ -150,8 +145,15 @@ const Home=()=> {
               return (
                 <div key={item?._id} className="cards" >
                   <Card style={{ borderRadius: "15px",padding: "0px" }}>
-                  <img src={item?.image_url} />
-                      <label>{truncateString(item?.name, 25)}</label>
+                  <Image 
+                    // placeholder='blur'
+                    loader={()=>item?.image_url} 
+                    src={item?.image_url} 
+                    alt="Failed To Get Image" 
+                    width={220} 
+                    height={300} 
+                  />
+                  <label>{truncateString(item?.name, 25)}</label>
                       <br />
                       <label>Platform : </label>
                       <br />
@@ -169,3 +171,14 @@ const Home=()=> {
 }
 
 export default Home;
+
+export async function getServerSideProps() {
+  const movie = await getDataMovies("_id genre image_url title year")
+  const game = await getDataGames("_id name platform image_url")
+  return{
+    props:{
+      movies:movie?.data?.data?.fetchMovies,
+      games:game?.data?.data?.fetchGames
+    }
+  }
+}

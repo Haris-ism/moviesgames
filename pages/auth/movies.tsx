@@ -38,16 +38,17 @@ import {
     typeMoviesTable,
     typeSnackBar
 } from '../../utils/types';
+import Image from 'next/image';
 
 const columns: readonly typeMoviesTable[] = [
   { id: 'no', label: 'No', minWidth: 10 },
-  { id: 'img_url', label: 'Image', minWidth: 150 },
+  { id: 'img_url', label: 'Image', minWidth: 250 },
   { id: 'title', label: 'Title', minWidth: 100 },
   { id: 'genre', label: 'Genre', minWidth: 100 },
-  { id: 'rating', label: 'Rating', minWidth: 100 },
-  { id: 'description', label: 'Description', minWidth: 100 },
-  { id: 'year', label: 'Year', minWidth: 100 },
-  { id: 'review', label: 'Review', minWidth: 100 },
+  { id: 'description', label: 'Description', minWidth: 350 },
+  { id: 'review', label: 'Review', minWidth: 350 },
+  { id: 'rating', label: 'Rating', minWidth: 50 },
+  { id: 'year', label: 'Year', minWidth: 50 },
   { id: 'duration', label: 'Duration', minWidth: 100 },
   { id: 'action', label: 'Action', minWidth: 100 },
 ];
@@ -450,11 +451,22 @@ const Authmovies=()=> {
                                     width:columns[1].minWidth
                                 }}
                             >
-                                <img
-                                    src={item.image_url}
-                                    alt="euy"
-                                    width={columns[1].minWidth}
-                                />
+                                 <Box 
+                                    sx={{
+                                        width:columns[1].minWidth,
+                                        height:"300px",
+                                        position: 'relative'
+                                        }}
+                                >
+                                    <Image 
+                                        // placeholder='blur'
+                                        loader={()=>item?.image_url} 
+                                        src={item?.image_url} 
+                                        alt="Failed To Get Image" 
+                                        fill
+                                        objectFit='contain' 
+                                        />
+                                </Box>
                             </TableCell>
                             <TableCell 
                                 sx={{
@@ -475,13 +487,6 @@ const Authmovies=()=> {
                                     width:200
                                 }}
                             >
-                                {item.rating}
-                            </TableCell>
-                            <TableCell 
-                                sx={{
-                                    width:200
-                                }}
-                            >
                                 {item.description}
                             </TableCell>
                             <TableCell 
@@ -489,14 +494,21 @@ const Authmovies=()=> {
                                     width:100
                                 }}
                             >
-                                {item.year}
+                                {item.review}
+                            </TableCell>
+                            <TableCell 
+                                sx={{
+                                    width:200
+                                }}
+                            >
+                                {item.rating}
                             </TableCell>
                             <TableCell 
                                 sx={{
                                     width:100
                                 }}
                             >
-                                {item.review}
+                                {item.year}
                             </TableCell>
                             <TableCell 
                                 sx={{

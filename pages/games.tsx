@@ -5,27 +5,9 @@ import Card from '@mui/material/Card';
 import { useEffect, useState } from "react";
 import { getDataGames } from '../utils';
 import { fetchGames } from '../utils/types';
+import Image from 'next/image';
 
-const Games=()=>{
-  const [open, setOpen] = useState<boolean>(true);
-
-  const [games, setGames] = useState<fetchGames[]>([])
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleGet = async () => {
-    try {
-      const game = await getDataGames("_id name platform image_url")
-      setGames(game?.data?.data?.fetchGames)
-    }
-    catch (err:any) {
-      alert(err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
-    }
-    handleClose()
-  }
-  useEffect(() => {
-    handleGet();
-  }, [])
+const Games=({games}:any)=>{
     const truncateString = (str:string, num:number) => {
         if (str === undefined) {
           return ""
@@ -42,13 +24,13 @@ const Games=()=>{
       }
     return(
         <>
-          <Backdrop
+          {/* <Backdrop
               sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
               open={open}
               onClick={handleClose}
             >
               <CircularProgress color="inherit" />
-          </Backdrop>
+          </Backdrop> */}
           <h2 style={{ "fontSize": "30px", display: "flex", justifyContent: "center" }}>Latest Games</h2>
           <div className="container" style={{ display: "flex", justifyContent: "center" }}>
             {
@@ -56,7 +38,14 @@ const Games=()=>{
                   return (
                     <div key={item?._id} className="cards" >
                       <Card style={{ borderRadius: "15px",padding: "0px" }}>
-                      <img src={item?.image_url} />
+                      <Image 
+                        // placeholder='blur'
+                        loader={()=>item?.image_url} 
+                        src={item?.image_url} 
+                        alt="Failed To Get Image" 
+                        width={220} 
+                        height={300} 
+                      />
                           <label>{item?.name}</label>
                           <br />
                           <label>Platform : </label>
@@ -73,3 +62,12 @@ const Games=()=>{
 }
 
 export default Games;
+
+export async function getServerSideProps() {
+  const game = await getDataGames("_id name platform image_url")
+  return{
+    props:{
+      games:game?.data?.data?.fetchGames
+    }
+  }
+}
