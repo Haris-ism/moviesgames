@@ -2,6 +2,8 @@ import {
     Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Modal, TextField
 } from "@mui/material";
 import { typeModalProps } from '../utils/types';
+import star from './star.png'
+
 const ModalComp=({formik,open,handleClose,handleSubmit,mode,setSnackBar}:typeModalProps)=>{
     const style = {
         position: 'absolute' as 'absolute',
@@ -114,7 +116,7 @@ const ModalComp=({formik,open,handleClose,handleSubmit,mode,setSnackBar}:typeMod
                 </FormControl>
                 <br />
                 {
-                    mode=="create"?
+                    mode=="create" ?
                     <Button 
                         component="label"
                         variant="contained"

@@ -1,12 +1,14 @@
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import {CardActionArea,
+  Typography,Box
+} from '@mui/material'
 import Card from '@mui/material/Card';
 import { useEffect, useState } from "react";
-import { getDataGames } from '../utils';
-import { fetchGames } from '../utils/types';
+import { getDataGames } from '../../utils';
+import { fetchGames } from '../../utils/types';
 import Image from 'next/image';
-
+import Link from 'next/link';
 const Games=({games}:any)=>{
     const truncateString = (str:string, num:number) => {
         if (str === undefined) {
@@ -24,35 +26,31 @@ const Games=({games}:any)=>{
       }
     return(
         <>
-          {/* <Backdrop
-              sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-              open={open}
-              onClick={handleClose}
-            >
-              <CircularProgress color="inherit" />
-          </Backdrop> */}
-          <h2 style={{ "fontSize": "30px", display: "flex", justifyContent: "center" }}>Latest Games</h2>
           <div className="container" style={{ display: "flex", justifyContent: "center" }}>
             {
               games.map((item:fetchGames, index:number) => {
                   return (
-                    <div key={item?._id} className="cards" >
+                    <Box key={item?._id} className="cards" >
+                      <Link href={`/games/${item?._id}`}>
                       <Card style={{ borderRadius: "15px",padding: "0px" }}>
-                      <Image 
-                        // placeholder='blur'
-                        loader={()=>item?.image_url} 
-                        src={item?.image_url} 
-                        alt="Failed To Get Image" 
-                        width={220} 
-                        height={300} 
-                      />
-                          <label>{item?.name}</label>
+                        <CardActionArea>
+                          <Image 
+                            // placeholder='blur'
+                            loader={()=>item?.image_url} 
+                            src={item?.image_url} 
+                            alt="Failed To Get Image" 
+                            width={220} 
+                            height={300} 
+                            />
+                          <Typography gutterBottom component="label">{truncateString(item?.name, 23)}</Typography>
                           <br />
-                          <label>Platform : </label>
+                          <Typography gutterBottom component="label">Platform :</Typography>
                           <br />
-                          <label>{truncateString(item?.platform, 25)}</label>
+                          <Typography gutterBottom component="label">{truncateString(item?.platform, 25)}</Typography>
+                        </CardActionArea>
                       </Card>
-                    </div>
+                      </Link>
+                    </Box>
                   )
               })
             }

@@ -1,9 +1,4 @@
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import Backdrop from '@mui/material/Backdrop';
-import Card from '@mui/material/Card';
-import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/Grid';
-import MobileStepper from '@mui/material/MobileStepper';
 import { useTheme } from '@mui/material/styles';
 import Link from 'next/link';
 import { useEffect, useState } from "react";
@@ -12,6 +7,18 @@ import { autoPlay } from 'react-swipeable-views-utils';
 import { getDataGames, getDataMovies } from '../utils';
 import { fetchGames, fetchMovies } from '../utils/types';
 import Image from 'next/image';
+import {
+  Card,
+  Box,
+  InputBase,
+  Grid,
+  IconButton,
+  CardActionArea,
+  Typography,
+  MobileStepper,
+  CircularProgress,
+  Backdrop
+} from '@mui/material';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -103,24 +110,25 @@ const Home=({movies,games}:any)=> {
         movies.map((item:fetchMovies, index:number) => {
           if ((movies.length) - index < 7) {
             return (
-              <div key={item?._id} className="cards" >
+              <Box key={item?._id} className="cards" >
                 <Card style={{ borderRadius: "15px",padding: "0px" }}>
-                <Image 
-                  // placeholder='blur'
-                  loader={()=>item?.image_url} 
-                  src={item?.image_url} 
-                  alt="Failed To Get Image" 
-                  width={220} 
-                  height={300} 
-                  
-                />
-                <label >{truncateString(item?.title, 25)}</label>
-                  <br />
-                  <label>Genre : {truncateString(item?.genre, 20)}</label>
-                  <br />
-                  <label>Year : {item?.year}</label>
+                  <CardActionArea>
+                    <Image 
+                      // placeholder='blur'
+                      loader={()=>item?.image_url} 
+                      src={item?.image_url} 
+                      alt="Failed To Get Image" 
+                      width={220} 
+                      height={300} 
+                      />
+                    <Typography gutterBottom component="label">{truncateString(item?.title, 23)}</Typography>
+                    <br />
+                    <Typography gutterBottom component="label">Genre : {truncateString(item?.genre, 20)}</Typography>
+                    <br />
+                    <Typography gutterBottom component="label">Year : {item?.year}</Typography>
+                  </CardActionArea>
                 </Card>
-              </div>
+            </Box>
             )
           }
         })
@@ -143,23 +151,25 @@ const Home=({movies,games}:any)=> {
           games.map((item:fetchGames, index:number) => {
             if ((games.length) - index < 7) {
               return (
-                <div key={item?._id} className="cards" >
+                <Box key={item?._id} className="cards" >
                   <Card style={{ borderRadius: "15px",padding: "0px" }}>
-                  <Image 
-                    // placeholder='blur'
-                    loader={()=>item?.image_url} 
-                    src={item?.image_url} 
-                    alt="Failed To Get Image" 
-                    width={220} 
-                    height={300} 
-                  />
-                  <label>{truncateString(item?.name, 25)}</label>
+                    <CardActionArea>
+                      <Image 
+                        // placeholder='blur'
+                        loader={()=>item?.image_url} 
+                        src={item?.image_url} 
+                        alt="Failed To Get Image" 
+                        width={220} 
+                        height={300} 
+                        />
+                      <Typography gutterBottom component="label">{truncateString(item?.name, 23)}</Typography>
                       <br />
-                      <label>Platform : </label>
+                      <Typography gutterBottom component="label">Platform :</Typography>
                       <br />
-                      <label>{truncateString(item?.platform, 25)}</label>
+                      <Typography gutterBottom component="label">{truncateString(item?.platform, 25)}</Typography>
+                    </CardActionArea>
                   </Card>
-                </div>
+                </Box>
               )
             }
           })

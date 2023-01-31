@@ -32,6 +32,11 @@ import KeyIcon from '@mui/icons-material/Key';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import MovieIcon from '@mui/icons-material/Movie';
 import { useRouter } from 'next/router'
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import { Grid,InputBase } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -162,7 +167,7 @@ export default function Layout(props:typeProps) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -176,9 +181,188 @@ export default function Layout(props:typeProps) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            
-          </Typography>
+          <Grid container sm={12}>
+            <Grid item sm={4}>
+
+            </Grid>
+            <Grid item sm={4}>
+              <Box 
+                  component="form" 
+                  sx={{
+                      display:"flex",
+                      justifyContent:"center",
+                      alignItems:"center",
+                      position:"relative",
+                      left:"0px"
+                      }}>
+                  <Box 
+                  sx={{
+                      borderRadius:"3px",
+                      outlineStyle:"solid",
+                      outlineColor:"#b0bec5",
+                      outlineWidth:"1px",
+                      width:"250px",
+                      height:"38px",
+                      paddingLeft:"10px",
+                      display:"flex",
+                      alignItems:"center",
+                      }} 
+                  >
+                      <InputBase
+                          color="secondary"
+                          placeholder="Search"
+                          size="small"
+                          sx={{
+                            width:"220px",
+                            color:"white",
+                            
+                          }}
+                          // value={search}
+                          // onChange={handleChangeSearch}
+                      />
+                      {/* {
+                          search!="" ?
+                          <IconButton 
+                              sx={{
+                                  width:"10px",
+                                  height:"10px"
+                                  }} 
+                              onClick={handleCancelSearch} 
+                          >
+                              <ClearIcon sx={{fontSize:"10px"}} />
+                          </IconButton> :
+                          null
+
+                      } */}
+                  </Box>
+                  <IconButton  
+                      sx={{ p: '10px' }} 
+                      component="label" 
+                      color="inherit"
+                      // onClick={handleSearch}
+                  >
+                      <SearchRoundedIcon />
+                      <input hidden type="submit"/>
+                  </IconButton>
+              </Box>
+            </Grid>
+            <Grid item sm={4}>
+              <Box 
+                sx={{
+                  width:"100%",
+                  height:"50px",
+                  display:"flex", 
+                  justifyContent:"right",
+                  // backgroundColor:"coral"
+                  }}
+                >
+                <Link href="/" >
+                  <Grid 
+                    container 
+                    sx={{
+                      // backgroundColor:"aqua",
+                      display:"flex",
+                      justifyContent:"center"
+                      }}>
+                    <Grid 
+                      item 
+                      sm={12} 
+                      sx={{
+                        display:"flex",
+                        justifyContent:"center",
+                        marginBottom:"0px",
+                        paddingBottom:"0px",
+                        height:"33px"
+                        }}>
+                      <IconButton
+                        color="inherit"
+                        sx={{
+                          // backgroundColor:"crimson",
+                          width:"40px",
+                          height:"40px"
+                        }}
+                        >
+                        <HomeRoundedIcon />
+                      </IconButton>
+                    </Grid>
+                    <Grid item sm={12} sx={{display:"flex",justifyContent:"center"}}>
+                      <Typography sx={{fontSize:"0.8rem"}}>
+                        Home
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Link>
+                <Link href="/games" >
+                  <Grid 
+                    container 
+                    sx={{
+                      display:"flex",
+                      justifyContent:"center"
+                      }}>
+                    <Grid 
+                      item 
+                      sm={12} 
+                      sx={{
+                        display:"flex",
+                        justifyContent:"center",
+                        marginBottom:"0px",
+                        paddingBottom:"0px",
+                        height:"33px"
+                        }}>
+                      <IconButton
+                        color="inherit"
+                        sx={{
+                          width:"40px",
+                          height:"40px"
+                        }}
+                        >
+                        <SportsEsportsIcon />
+                      </IconButton>
+                    </Grid>
+                    <Grid item sm={12} sx={{display:"flex",justifyContent:"center"}}>
+                      <Typography sx={{fontSize:"0.8rem"}}>
+                        Games
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Link>
+                <Link href="/movies" >
+                  <Grid 
+                    container 
+                    sx={{
+                      display:"flex",
+                      justifyContent:"center"
+                      }}>
+                    <Grid 
+                      item 
+                      sm={12} 
+                      sx={{
+                        display:"flex",
+                        justifyContent:"center",
+                        marginBottom:"0px",
+                        paddingBottom:"0px",
+                        height:"33px"
+                        }}>
+                      <IconButton
+                        color="inherit"
+                        sx={{
+                          width:"40px",
+                          height:"40px"
+                        }}
+                        >
+                        <MovieIcon />
+                      </IconButton>
+                    </Grid>
+                    <Grid item sm={12} sx={{display:"flex",justifyContent:"center"}}>
+                      <Typography sx={{fontSize:"0.8rem"}}>
+                        Movies
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Link>
+              </Box>
+            </Grid>
+          </Grid>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
