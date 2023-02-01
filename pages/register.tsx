@@ -49,7 +49,6 @@ const Register = () => {
             required 
             onFocus={()=>{
               trigger.current.email=true
-              console.log(trigger)
             }}
             error={
               !formik.values?.email?.includes("@") && trigger.current.email ?
@@ -74,7 +73,6 @@ const Register = () => {
             required 
             onFocus={()=>{
               trigger.current.password=true
-              console.log(trigger)
             }}
             error={
               !(formik.values.password.length>=6) && trigger.current.password ?
@@ -99,7 +97,6 @@ const Register = () => {
             required 
             onFocus={()=>{
               trigger.current.confirm=true
-              console.log(trigger)
             }}
             error={
               formik.values.confirm!=formik.values.password && trigger.current.confirm ?

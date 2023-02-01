@@ -1,31 +1,80 @@
 
-import {useEffect,useState} from 'react'
-import { useFormik } from 'formik'
-import { getDataGame,getDataGames,getDataMovies,getDataMovie } from "../../utils"
-import {
-    graphQLFetchGames,typePostDataGame
-} from "../../utils/types"
+import { getDataMovies,getDataMovie } from "../../utils"
+import {typeID,typeMovieDetail} from "../../utils/types"
+import { GetStaticProps } from 'next'
+import { useContext,useEffect } from "react"
+import { UserContext } from "../../statemanagement/userContext"
+import Image from 'next/image'
 import star from '../../public/star.png'
-
-const MoviesID=({data}:any)=>{
-  const [open, setOpen] = useState<boolean>(false);
-
+import { 
+  Box, Typography
+} from '@mui/material'
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+const MoviesID=({data}:typeMovieDetail)=>{
+  const context = useContext(UserContext)
+  const setLoading=context.setLoading
+  useEffect(()=>{
+    setLoading(false)
+  },[])
     return(
-      <div id="article-list">
-      <div style={{ display: "flex", "margin-top": "20px" }}>
-        <img src={data.image_url} style={{ width: "300px", height: "400px", objectFit: "cover", "borderRadius": "15px" }} />
-        <div style={{ float: "left", "fontSize": "20px", padding: "10px", top: 0 }}>
-          <h3 style={{ "fontSize": "30px" }}>{data.title} ({data.year})</h3>
-          <div style={{ "fontSize": "23px" }}>({data.rating}) <img src="./star.png" style={{ width: "1.2em" }} />
-            |  {data.duration} Minutes | {data.genre}</div><br />
-          <div >Description:</div>
-          <div>{data.description}</div>
+      <Box sx={{ display: "flex", marginTop: "20px" }}>
+        <Box
+          sx={{
+            width:"300px",
+            height:"400px",
+            position:"relative"
+          }}
+        >
+          <Image 
+            loader={()=>data?.image_url} 
+            src={data?.image_url} 
+            alt="Failed To Get Image" 
+            objectFit="cover" 
+            fill
+            style={{borderRadius: "15px"}} 
+          />
+        </Box>
+        <Box sx={{ float: "left",padding: "10px", top: 0 }}>
+          <Typography gutterBottom variant="h5" sx={{ marginTop:"40px",marginBottom:"40px",fontWeight:"bold" }}>
+            {data?.title} ({data?.year})
+          </Typography>
+          <Box sx={{ fontSize: "23px",display:"flex",alignItems:"center"}}>
+            {
+              [...Array(5)].map((item,i)=>(
+                <Box key={i}>
+                  {
+                    i<data?.rating?
+                    <Image 
+                      src={star} 
+                      alt="star" 
+                      width={20}
+                      height={20}
+                    />:
+                    <StarBorderIcon sx={{color:"#2196f3", position:"relative",top:"2.7px"}}/>
+                  }
+                </Box>
+              ))
+            }
+            
+            <Typography variant="h6" sx={{marginLeft:"0.3rem"}}>
+              |
+            </Typography>
+            <br/>
+            <AccessTimeIcon sx={{color:"#2196f3",marginLeft:"0.3rem",marginRight:"0.3rem"}} /> 
+            <Typography variant="h6">
+             {data?.duration} Minutes | {data?.genre}
+            </Typography>
+          </Box>
           <br />
-          <div>Review:</div>
-          <div>{data.review}</div>
-        </div>
-      </div>
-    </div>
+          <Typography variant="h6">Description:</Typography>
+          <Typography variant="h6">{data?.description}</Typography>
+          <br />
+          <Typography variant="h6">Review:</Typography>
+          <Typography variant="h6">{data?.review}</Typography>
+        </Box>
+      </Box>
+    
     )
 }
 
@@ -33,19 +82,32 @@ export default MoviesID;
 
 export const getStaticPaths=async ()=>{
     const movie = await getDataMovies("_id")
-    const paths=movie?.data?.data?.fetchMovies.map(item=>({params:{moviesID:item._id}}))
-    console.log("paths:",movie?.data?.data)
+    const paths=movie?.data?.data?.fetchMovies.map((item:typeID)=>({params:{moviesID:item._id}}))
     return{
         paths:paths,
         fallback:false
     }
 }
 
-export const getStaticProps=async(context)=>{
-    const movie = await getDataMovie(context.params.moviesID, "_id title rating genre image_url duration year review description")
+export const getStaticProps:GetStaticProps=async(context)=>{
+  let data={
+    _id:"",
+    title:"",
+    rating:0,
+    genre:"",
+    image_url:"",
+    duration:0,
+    year:0,
+    review:"",
+    description:""
+  }
+  if (typeof context?.params?.moviesID=="string"){
+    const movie = await getDataMovie(context?.params?.moviesID, "_id title rating genre image_url duration year review description")
+    data = movie?.data?.data?.fetchOneMovie
+  }
     return{
         props:{
-            data:movie?.data?.data?.fetchOneMovie
+            data:data
         }
     }
 }

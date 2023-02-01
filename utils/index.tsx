@@ -2,7 +2,6 @@ import axios from "axios"
 // import 'dotenv/config'
 import { graphQLLogin, typePostDataGame, typePostDataMovie, typePutDataGame, typeRegister } from "./types"
 export const getDataMovies = (input:string) => {
-    console.log(process.env.NEXT_PUBLIC_GRAPHQL)
     return axios.post(`${process.env.NEXT_PUBLIC_GRAPHQL}`, {
         headers: {
             'Content-Type': 'application/json'

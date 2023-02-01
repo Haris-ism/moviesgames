@@ -25,7 +25,6 @@ const ModalComp=({formik,open,handleClose,handleSubmit,mode,setSnackBar}:typeMod
                     required 
                     // onFocus={()=>{
                     //   trigger.current.email=true
-                    //   console.log(trigger)
                     // }}
                     // error={
                         //   !formik.values.email.includes("@") && trigger.current.email ?

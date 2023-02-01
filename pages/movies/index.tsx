@@ -1,15 +1,21 @@
-import Backdrop from '@mui/material/Backdrop';
 import Card from '@mui/material/Card';
-import CircularProgress from '@mui/material/CircularProgress';
-import { useEffect, useState } from "react";
 import { getDataMovies } from '../../utils';
-import { fetchMovies } from '../../utils/types';
+import { fetchMovies,typePropsMovies } from '../../utils/types';
+import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import {CardActionArea,
     Typography,Box
   } from '@mui/material'
 import Link from 'next/link';
-const Movies=({movies}:any)=>{
+import { useContext,useEffect } from "react"
+import { UserContext } from "../../statemanagement/userContext"
+const Movies=({movies}:typePropsMovies)=>{
+  const context = useContext(UserContext)
+  const setLoading=context.setLoading
+  const loading=context.loading
+  useEffect(()=>{
+    setLoading(false)
+  },[])
     const truncateString = (str:string, num:number) => {
         if (str === undefined) {
           return ""
@@ -31,11 +37,10 @@ const Movies=({movies}:any)=>{
                 movies.map((item:fetchMovies, index:number) => {
                     return (
                     <Box key={item?._id} className="cards" >
-                      <Link href={`/movies/${item?._id}`}>
+                      <Link href={`/movies/${item?._id}`} onClick={()=>setLoading(true)}>
                             <Card style={{ borderRadius: "15px",padding: "0px" }}>
                                 <CardActionArea>
                                     <Image 
-                                        // placeholder='blur'
                                         loader={()=>item?.image_url} 
                                         src={item?.image_url} 
                                         alt="Failed To Get Image" 
@@ -61,7 +66,7 @@ const Movies=({movies}:any)=>{
 
 export default Movies;
 
-export async function getServerSideProps() {
+export const getServerSideProps:GetServerSideProps=async ()=> {
   const movie = await getDataMovies("_id genre image_url title year")
   return{
     props:{

@@ -55,7 +55,6 @@ const columns: readonly typeGamesTable[] = [
 const AuthGames=()=> {
   const [games, setGames] = useState<graphQLFetchGames[]>([])
   const [page, setPage] = useState<number>(0);
-  const [loading,setLoading]=useState<boolean>(true)
   const [search,setSearch]=useState<string>("")
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [tempGames,setTempGames]=useState<graphQLFetchGames[]>([])
@@ -70,6 +69,8 @@ const AuthGames=()=> {
   const setUser = context.setUser
   const token = context.token
   const setToken=context.setToken
+  const loading = context.loading
+  const setLoading=context.setLoading
   let history = useRouter();
   const trigger=useRef({
     email:false,
@@ -313,12 +314,6 @@ const AuthGames=()=> {
   };
   return (
     <>
-    <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-    >
-        <CircularProgress color="inherit" />
-    </Backdrop>
     <ModalComp 
         formik={formik} 
         open={open} 

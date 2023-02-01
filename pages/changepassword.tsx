@@ -19,8 +19,10 @@ const ChangePassword = () => {
     confirm:false
   })
   const context = useContext(UserContext)
-  const setUser = context.setUser
-  const user=context.user
+  let user=context.user
+  if (!user){
+    user=""
+  }
   const formik= useFormik<typeRegister>({
     initialValues: {
       email: user,
@@ -111,7 +113,6 @@ const ChangePassword = () => {
             required 
             onFocus={()=>{
               trigger.current.confirm=true
-              console.log(trigger)
             }}
             error={
               formik.values.confirm!=formik.values.password && trigger.current.confirm ?

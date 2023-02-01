@@ -36,7 +36,8 @@ import {
 import {
     graphQLFetchMovies,
     typeMoviesTable,
-    typeSnackBar
+    typeSnackBar,
+    typeActionEditor
 } from '../../utils/types';
 import Image from 'next/image';
 
@@ -56,7 +57,6 @@ const columns: readonly typeMoviesTable[] = [
 const Authmovies=()=> {
   const [movies, setMovies] = useState<graphQLFetchMovies[]>([])
   const [page, setPage] = useState<number>(0);
-  const [loading,setLoading]=useState<boolean>(true)
   const [search,setSearch]=useState<string>("")
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [tempMovies,setTempMovies]=useState<graphQLFetchMovies[]>([])
@@ -71,6 +71,8 @@ const Authmovies=()=> {
   const setUser = context.setUser
   const token = context.token
   const setToken=context.setToken
+  const loading = context.loading
+  const setLoading=context.setLoading
   let history = useRouter();
   const trigger=useRef({
     email:false,
@@ -170,7 +172,7 @@ const Authmovies=()=> {
                 message:"Session Expired, Please Login."
                 })
               localStorage.removeItem('token')
-              localStorage.removeItem('userId')
+              localStorage.removeItem('uactionserId')
               history.push(`/login`)
             }
           }
@@ -180,9 +182,8 @@ const Authmovies=()=> {
   const Action=({item}:any)=>{
     const handleDelete = async () => {
         setLoading(true)
-        console.log("delete id:",item)
         try {
-          await deleteDataMovie(item._id, token)
+          await deleteDataMovie(item?._id, token)
           setSnackBar({
             trigger:true,
             severity:"success",
@@ -246,7 +247,6 @@ const Authmovies=()=> {
     setLoading(true)
     try {
       const movie = await getDataMovies("title genre _id description duration image_url rating review year")
-      console.log("movies:",movie?.data?.data?.fetchMovies)
       setMovies(movie?.data?.data?.fetchMovies)
       setTempMovies(movie?.data?.data?.fetchMovies)
 
@@ -279,7 +279,7 @@ const Authmovies=()=> {
   }
   const handleSearch=(e:SyntheticEvent)=>{
     e.preventDefault()
-    let searchVal=movies.filter(item=>item.title.toLowerCase().includes(search))
+    let searchVal=movies.filter(item=>item?.title?.toLowerCase().includes(search))
     if (searchVal.length>0){
         // setTempMovies(movies)
         setMovies(searchVal)
@@ -320,12 +320,6 @@ const Authmovies=()=> {
   };
   return (
     <>
-    <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 99 }}
-        open={loading}
-    >
-        <CircularProgress color="inherit" />
-    </Backdrop>
     <ModalComp 
         formik={formik} 
         open={open} 
@@ -473,49 +467,49 @@ const Authmovies=()=> {
                                     width:200
                                 }}
                             >
-                                {item.title}
+                                {item?.title}
                             </TableCell>
                             <TableCell 
                                 sx={{
                                     width:250
                                 }}
                             >
-                                {item.genre}
+                                {item?.genre}
                             </TableCell>
                             <TableCell 
                                 sx={{
                                     width:200
                                 }}
                             >
-                                {item.description}
+                                {item?.description}
                             </TableCell>
                             <TableCell 
                                 sx={{
                                     width:100
                                 }}
                             >
-                                {item.review}
+                                {item?.review}
                             </TableCell>
                             <TableCell 
                                 sx={{
                                     width:200
                                 }}
                             >
-                                {item.rating}
+                                {item?.rating}
                             </TableCell>
                             <TableCell 
                                 sx={{
                                     width:100
                                 }}
                             >
-                                {item.year}
+                                {item?.year}
                             </TableCell>
                             <TableCell 
                                 sx={{
                                     width:100
                                 }}
                             >
-                                {item.duration+" "}minutes
+                                {item?.duration+" "}minutes
                             </TableCell>
                             <TableCell 
                                 sx={{

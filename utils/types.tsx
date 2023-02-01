@@ -53,6 +53,8 @@ export type contextStates={
   setUser:React.Dispatch<React.SetStateAction<string | null>>
   token:string|null
   setToken:React.Dispatch<React.SetStateAction<string | null>>
+  loading:boolean
+  setLoading:React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export type typeProps={
@@ -60,7 +62,7 @@ export type typeProps={
 }
 
 export type typeRegister={
-  email:string|null
+  email:string
   password:string
   confirm:string
 }
@@ -120,4 +122,51 @@ export type typeSnackBar={
   trigger:boolean
   severity:"success"|"error"|"warning"|"info"
   message:string
+}
+export type typeID={
+  _id:string
+}
+
+export type typePropsHome={
+  movies:fetchMovies[],
+  games:fetchGames[]
+}
+
+export type typePropsMovies={
+  movies:fetchMovies[]
+}
+
+export type typePropsGames={
+  games:fetchGames[]
+}
+
+export type typeMovieDetail={
+  data:{
+    _id:string
+    title:string
+    rating:number
+    genre:string
+    image_url:string
+    duration:number
+    year:number
+    review:string
+    description:string
+  }
+}
+
+export type typeGameDetail={
+  data:{
+    name:string
+    genre:string
+    image_url:string
+    singlePlayer:boolean
+    multiPlayer:boolean
+    platform:string
+    release:number
+    _id:string
+  }
+}
+
+export type typeActionEditor={
+  item:graphQLFetchMovies
 }

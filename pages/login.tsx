@@ -4,13 +4,11 @@ import {
 } from "@mui/material";
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
-import { SyntheticEvent, useContext, useRef, useState } from "react";
+import { SyntheticEvent, useContext, useRef, useState,useEffect } from "react";
 import { UserContext } from "../statemanagement/userContext";
 import { login } from '../utils';
 import { typeLogin, typeSnackBar } from "../utils/types";
-
 const Login = () => {
-  const [loading,setLoading]=useState<boolean>(false)
   const [snackBar,setSnackBar]=useState<typeSnackBar>({
     trigger:false,
     severity:"error",
@@ -23,8 +21,9 @@ const Login = () => {
   let history = useRouter();
   const context = useContext(UserContext)
   const setUser = context.setUser
-  // const token = context.token
   const setToken=context.setToken
+  const setLoading=context.setLoading
+  const loading=context.loading
   const formik= useFormik<typeLogin>({
     initialValues: {
       email: "",
@@ -85,12 +84,6 @@ const Login = () => {
   };
   return (
     <>
-    <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <CircularProgress color="inherit" />
-    </Backdrop>
       <Box sx={{ margin: "0 auto", width: "400px", padding: "50px" }}>
         <Box component="form" >
           <TextField 

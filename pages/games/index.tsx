@@ -1,15 +1,20 @@
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import { GetServerSideProps } from 'next';
 import {CardActionArea,
   Typography,Box
 } from '@mui/material'
 import Card from '@mui/material/Card';
-import { useEffect, useState } from "react";
 import { getDataGames } from '../../utils';
-import { fetchGames } from '../../utils/types';
+import { fetchGames,typePropsGames } from '../../utils/types';
 import Image from 'next/image';
 import Link from 'next/link';
-const Games=({games}:any)=>{
+import { useContext,useEffect } from "react"
+import { UserContext } from "../../statemanagement/userContext"
+const Games=({games}:typePropsGames)=>{
+  const context = useContext(UserContext)
+  const setLoading=context.setLoading
+  useEffect(()=>{
+    setLoading(false)
+  },[])
     const truncateString = (str:string, num:number) => {
         if (str === undefined) {
           return ""
@@ -31,7 +36,7 @@ const Games=({games}:any)=>{
               games.map((item:fetchGames, index:number) => {
                   return (
                     <Box key={item?._id} className="cards" >
-                      <Link href={`/games/${item?._id}`}>
+                      <Link href={`/games/${item?._id}`} onClick={()=>setLoading(true)}>
                       <Card style={{ borderRadius: "15px",padding: "0px" }}>
                         <CardActionArea>
                           <Image 
@@ -61,7 +66,7 @@ const Games=({games}:any)=>{
 
 export default Games;
 
-export async function getServerSideProps() {
+export const getServerSideProps:GetServerSideProps=async ()=> {
   const game = await getDataGames("_id name platform image_url")
   return{
     props:{

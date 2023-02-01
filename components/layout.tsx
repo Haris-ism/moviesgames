@@ -33,10 +33,9 @@ import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import MovieIcon from '@mui/icons-material/Movie';
 import { useRouter } from 'next/router'
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import { Grid,InputBase } from '@mui/material';
+import { Backdrop, CircularProgress, Grid,InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -116,12 +115,12 @@ export default function Layout(props:typeProps) {
     user:false,
     editor:false
   });
-  console.log("open:",open)
+  console.log("loading layout:",open)
   const handleLogout = () => {
     localStorage.removeItem('userId')
     localStorage.removeItem('token')
-    setUser(null)
-    setToken(null)
+    setUser("")
+    setToken("")
     history.push(`/`)
   }
   const handleClick = (input:"user"|"editor") => {
@@ -145,6 +144,9 @@ export default function Layout(props:typeProps) {
   const user=context.user
   const token = context.token
   const setToken=context.setToken
+  const loading=context.loading
+  const setLoading=context.setLoading
+  const router = useRouter()
   useEffect(()=>{
     if (localStorage.getItem('userId')) {
       setUser(localStorage.getItem('userId'))
@@ -163,9 +165,22 @@ export default function Layout(props:typeProps) {
       editor:false
     });
   };
-
+  const handleLink=(input:string)=>{
+    if (router.pathname!=input){
+      setLoading(true) 
+    }else{
+      setLoading(false)
+    }
+  }
   return (
-    <Box sx={{ display: 'flex' }}>
+    <>
+      <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 99 }}
+          open={loading}
+      >
+          <CircularProgress color="inherit" />
+      </Backdrop>
+      <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open} >
         <Toolbar>
@@ -256,7 +271,7 @@ export default function Layout(props:typeProps) {
                   // backgroundColor:"coral"
                   }}
                 >
-                <Link href="/" >
+                <Link href="/" onClick={()=>handleLink("/")}>
                   <Grid 
                     container 
                     sx={{
@@ -292,7 +307,7 @@ export default function Layout(props:typeProps) {
                     </Grid>
                   </Grid>
                 </Link>
-                <Link href="/games" >
+                <Link href="/games" onClick={()=>handleLink("/games")}>
                   <Grid 
                     container 
                     sx={{
@@ -326,7 +341,7 @@ export default function Layout(props:typeProps) {
                     </Grid>
                   </Grid>
                 </Link>
-                <Link href="/movies" >
+                <Link href="/movies" onClick={()=>handleLink("/movies")}>
                   <Grid 
                     container 
                     sx={{
@@ -409,7 +424,7 @@ export default function Layout(props:typeProps) {
               </ListItemButton>
               <Collapse in={openAccordion.user} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <Link href="/changepassword">
+                  <Link href="/changepassword" >
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
                       <KeyIcon />
@@ -464,7 +479,7 @@ export default function Layout(props:typeProps) {
               </ListItemButton>
               <Collapse in={openAccordion.editor} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <Link href="/auth/games">
+                  <Link href="/auth/games" onClick={()=>handleLink("/auth/games")}>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
                       <SportsEsportsIcon />
@@ -474,7 +489,7 @@ export default function Layout(props:typeProps) {
                   </Link>
                 </List>
                 <List component="div" disablePadding>
-                <Link href="/auth/movies">
+                <Link href="/auth/movies" onClick={()=>handleLink("/auth/movies")}>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
                       <MovieIcon />
@@ -544,5 +559,7 @@ export default function Layout(props:typeProps) {
         {props.children}
       </Box>
     </Box>
+    </>
+    
   );
 }
