@@ -78,6 +78,9 @@ const Authmovies=()=> {
     email:false,
     password:false
   })
+  useEffect(() => {
+    handleGet();
+  }, [])
   
   const handleOpen = () => {
     setModalMode("create")
@@ -215,10 +218,6 @@ const Authmovies=()=> {
         }
         setOpen(true)
     }
-    useEffect(() => {
-        handleGet();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])
     return(
         <>
             <Button 
