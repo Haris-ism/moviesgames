@@ -15,6 +15,7 @@ const Movies=({movies}:typePropsMovies)=>{
   const loading=context.loading
   useEffect(()=>{
     setLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
     const truncateString = (str:string, num:number) => {
         if (str === undefined) {

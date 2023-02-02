@@ -1,10 +1,10 @@
 import {
-  Alert, Backdrop, Box,
-  Button, CircularProgress, Snackbar, TextField
+  Alert, Box,
+  Button, Snackbar, TextField
 } from "@mui/material";
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
-import { SyntheticEvent, useContext, useRef, useState,useEffect } from "react";
+import { SyntheticEvent, useContext, useRef, useState } from "react";
 import { UserContext } from "../statemanagement/userContext";
 import { login } from '../utils';
 import { typeLogin, typeSnackBar } from "../utils/types";
@@ -60,9 +60,7 @@ const Login = () => {
         severity:"success",
         message:"Login Success!"
       })
-      setTimeout(()=>{
-        history.push("/")
-      },1000)
+      history.push("/")
     }
     catch (err:any) {
       setSnackBar({
@@ -84,65 +82,69 @@ const Login = () => {
   };
   return (
     <>
-      <Box sx={{ margin: "0 auto", width: "400px", padding: "50px" }}>
-        <Box component="form" >
-          <TextField 
-            required 
-            onFocus={()=>{
-              trigger.current.email=true
-            }}
-            error={
-              !formik.values.email.includes("@") && trigger.current.email ?
-              true :
-              false
-            }
-            helperText={
-              !formik.values.email.includes("@") && trigger.current.email ?
-              "Please input a valid email" :
-              "" 
-            }
-            size="small"
-            label="Email"
-            type="email" 
-            name="email" 
-            onChange={formik.handleChange} 
-            value={formik.values.email} 
-            sx={{marginBottom:"20px"}}
-          />
-          <br />
-          <TextField 
-            required 
-            onFocus={()=>{
-              trigger.current.password=true
-            }}
-            error={
-              !(formik.values.password.length>=6) && trigger.current.password ?
-              true :
-              false
-            }
-            helperText={
-              !(formik.values.password.length>=6) && trigger.current.password ?
-              "Minimum 6 digits" :
-              "" 
-            }
-            size="small"
-            label="Password"
-            type="password" 
-            name="password" 
-            onChange={formik.handleChange} 
-            value={formik.values.password} 
-            sx={{marginBottom:"20px"}}
-          />
-          <br />
-          <Button 
-            component="label"
-            variant="contained"
-            size="small"
-            onClick={handleLogin}
-          >
+      <Box sx={{ padding: "50px"}}>
+        <Box component="form" sx={{position:"relative",left:"-20px"}}>
+          <Box sx={{display:"flex",justifyContent:"center"}}>
+            <TextField 
+              required 
+              onFocus={()=>{
+                trigger.current.email=true
+              }}
+              error={
+                !formik.values.email.includes("@") && trigger.current.email ?
+                true :
+                false
+              }
+              helperText={
+                !formik.values.email.includes("@") && trigger.current.email ?
+                "Please input a valid email" :
+                "" 
+              }
+              size="small"
+              label="Email"
+              type="email" 
+              name="email" 
+              onChange={formik.handleChange} 
+              value={formik.values.email} 
+              sx={{marginBottom:"20px"}}
+              />
+            </Box>
+          <Box sx={{display:"flex",justifyContent:"center"}}>
+            <TextField 
+              required 
+              onFocus={()=>{
+                trigger.current.password=true
+              }}
+              error={
+                !(formik.values.password.length>=6) && trigger.current.password ?
+                true :
+                false
+              }
+              helperText={
+                !(formik.values.password.length>=6) && trigger.current.password ?
+                "Minimum 6 digits" :
+                "" 
+              }
+              size="small"
+              label="Password"
+              type="password" 
+              name="password" 
+              onChange={formik.handleChange} 
+              value={formik.values.password} 
+              sx={{marginBottom:"20px"}}
+              />
+          </Box>
+          <Box sx={{display:"flex",justifyContent:"center"}}>
+            <Button 
+              component="label"
+              variant="contained"
+              size="small"
+              onClick={handleLogin}
+              >
             Login
             <input hidden type="submit"/>
           </Button>
+          </Box>
         </Box>
       </Box>
       <Snackbar open={snackBar.trigger} autoHideDuration={4000} onClose={handleSnackBarClose}>

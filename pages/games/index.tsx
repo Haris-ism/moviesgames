@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
-import {CardActionArea,
+import {
+  CardActionArea,
   Typography,Box
 } from '@mui/material'
 import Card from '@mui/material/Card';
@@ -14,6 +15,7 @@ const Games=({games}:typePropsGames)=>{
   const setLoading=context.setLoading
   useEffect(()=>{
     setLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
     const truncateString = (str:string, num:number) => {
         if (str === undefined) {

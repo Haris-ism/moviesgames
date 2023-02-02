@@ -16,6 +16,7 @@ const MoviesID=({data}:typeMovieDetail)=>{
   const setLoading=context.setLoading
   useEffect(()=>{
     setLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
     return(
       <Box sx={{ display: "flex", marginTop: "20px" }}>
@@ -81,6 +82,8 @@ const MoviesID=({data}:typeMovieDetail)=>{
 export default MoviesID;
 
 export const getStaticPaths=async ()=>{
+  console.log("moviesid")
+
     const movie = await getDataMovies("_id")
     const paths=movie?.data?.data?.fetchMovies.map((item:typeID)=>({params:{moviesID:item._id}}))
     return{

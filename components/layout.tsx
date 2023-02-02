@@ -1,3 +1,12 @@
+import KeyIcon from '@mui/icons-material/Key';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import MovieIcon from '@mui/icons-material/Movie';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import ClearIcon from '@mui/icons-material/Clear';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import LogoutIcon from '@mui/icons-material/Logout';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
@@ -6,36 +15,32 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
+import {
+  Box,
+  CssBaseline,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Toolbar,
+  Typography,
+  Collapse,
+  Backdrop,
+  CircularProgress,
+  Grid,
+  InputBase
+} from '@mui/material'
 import MuiDrawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import { CSSObject, styled, Theme, useTheme } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import {useState,useEffect} from 'react';
+import {useState,useEffect,useContext} from 'react';
+import { useRouter } from 'next/router'
 import Link from 'next/link';
-import { useContext,useRef } from "react"
 import { UserContext } from "../statemanagement/userContext"
 import { typeProps } from "../utils/types";
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import LogoutIcon from '@mui/icons-material/Logout';
-import Collapse from '@mui/material/Collapse';
-import KeyIcon from '@mui/icons-material/Key';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
-import MovieIcon from '@mui/icons-material/Movie';
-import { useRouter } from 'next/router'
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import { Backdrop, CircularProgress, Grid,InputBase } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -110,12 +115,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function Layout(props:typeProps) {
   let history = useRouter();
   const theme = useTheme();
+  const [search,setSearch]=useState<string>("")
   const [open, setOpen] = useState<boolean>(false);
   const [openAccordion, setOpenAccordion] = useState({
     user:false,
     editor:false
   });
-  console.log("loading layout:",open)
+  const handleCancelSearch=()=>{
+    setSearch("")
+  }
   const handleLogout = () => {
     localStorage.removeItem('userId')
     localStorage.removeItem('token')
@@ -148,10 +156,11 @@ export default function Layout(props:typeProps) {
   const setLoading=context.setLoading
   const router = useRouter()
   useEffect(()=>{
-    if (localStorage.getItem('userId')) {
+    if (localStorage.getItem('userId') && localStorage.getItem('token')) {
       setUser(localStorage.getItem('userId'))
       setToken(localStorage.getItem('token'))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   const handleDrawerOpen = () => {
@@ -171,6 +180,11 @@ export default function Layout(props:typeProps) {
     }else{
       setLoading(false)
     }
+  }
+  const handleSearch=(e:React.SyntheticEvent)=>{
+    e.preventDefault()
+    // alert("euy")
+    history.push(`/search/${search}`)
   }
   return (
     <>
@@ -198,7 +212,6 @@ export default function Layout(props:typeProps) {
           </IconButton>
           <Grid container sm={12}>
             <Grid item sm={4}>
-
             </Grid>
             <Grid item sm={4}>
               <Box 
@@ -232,10 +245,10 @@ export default function Layout(props:typeProps) {
                             color:"white",
                             
                           }}
-                          // value={search}
-                          // onChange={handleChangeSearch}
+                          value={search}
+                          onChange={(e)=>setSearch(e.target.value)}
                       />
-                      {/* {
+                      {
                           search!="" ?
                           <IconButton 
                               sx={{
@@ -248,14 +261,14 @@ export default function Layout(props:typeProps) {
                           </IconButton> :
                           null
 
-                      } */}
+                      }
                   </Box>
                   <IconButton  
                       sx={{ p: '10px' }} 
                       component="label" 
                       color="inherit"
-                      // onClick={handleSearch}
-                  >
+                      onClick={handleSearch}
+                      >
                       <SearchRoundedIcon />
                       <input hidden type="submit"/>
                   </IconButton>

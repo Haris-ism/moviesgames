@@ -29,6 +29,7 @@ const Home=({movies,games}:typePropsHome)=> {
   const maxSteps:number = movies?.length || 0;
   useEffect(()=>{
     setLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   const handleStepChange = (step: number) => {
     setActiveStep(step);
@@ -61,8 +62,8 @@ const Home=({movies,games}:typePropsHome)=> {
           {
           movies.map((item:fetchMovies, index:number) => 
            (    
-            <div>
-                <div key={index} style={{borderRadius:"15px",width: '100%', height: '330px', position: 'relative'}}>
+            <div key={index}>
+                <div style={{borderRadius:"15px",width: '100%', height: '330px', position: 'relative'}}>
                   <Image 
                       // placeholder='blur'
                       loader={()=>item?.image_url} 

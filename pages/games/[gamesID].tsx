@@ -11,6 +11,7 @@ const GamesID=({data}:typeGameDetail)=>{
   const setLoading=context.setLoading
   useEffect(()=>{
     setLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
     return(
         <Box style={{ display: "flex", marginTop: "20px" }}>

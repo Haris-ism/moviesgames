@@ -1,8 +1,15 @@
 import {
-    Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Modal, TextField
+    Box, 
+    Button, 
+    Checkbox, 
+    FormControl, 
+    FormControlLabel, 
+    FormGroup, 
+    FormLabel, 
+    Modal, 
+    TextField
 } from "@mui/material";
 import { typeModalProps } from '../utils/types';
-import star from './star.png'
 
 const ModalComp=({formik,open,handleClose,handleSubmit,mode,setSnackBar}:typeModalProps)=>{
     const style = {

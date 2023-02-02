@@ -4,8 +4,8 @@ import ClearIcon from '@mui/icons-material/Clear';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import {
-    Alert, Backdrop, Box,
-    Button, CircularProgress,
+    Alert, Box,
+    Button,
     Fab, Grid, IconButton,
     InputBase, Snackbar, Table,
     TableBody,
@@ -78,9 +78,6 @@ const Authmovies=()=> {
     email:false,
     password:false
   })
-  useEffect(() => {
-    handleGet();
-  }, [])
   
   const handleOpen = () => {
     setModalMode("create")
@@ -218,6 +215,10 @@ const Authmovies=()=> {
         }
         setOpen(true)
     }
+    useEffect(() => {
+        handleGet();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [])
     return(
         <>
             <Button 
