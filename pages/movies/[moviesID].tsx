@@ -47,62 +47,68 @@ const MoviesID=()=>{
     setLoading(false)
   }
     return(
-      <Box sx={{ display: "flex", marginTop: "20px" }}>
-        <Box
-          sx={{
-            width:"300px",
-            height:"400px",
-            position:"relative"
-          }}
-        >
-          <Image 
-            loader={()=>data?.image_url} 
-            src={data?.image_url} 
-            alt="Failed To Get Image" 
-            objectFit="cover" 
-            fill
-            style={{borderRadius: "15px"}} 
-          />
-        </Box>
-        <Box sx={{ float: "left",padding: "10px", top: 0 }}>
-          <Typography gutterBottom variant="h5" sx={{ marginTop:"40px",marginBottom:"40px",fontWeight:"bold" }}>
-            {data?.title} ({data?.year})
-          </Typography>
-          <Box sx={{ fontSize: "23px",display:"flex",alignItems:"center"}}>
-            {
-              [...Array(5)].map((item,i)=>(
-                <Box key={i}>
-                  {
-                    i<data?.rating?
-                    <Image 
-                      src={star} 
-                      alt="star" 
-                      width={20}
-                      height={20}
-                    />:
-                    <StarBorderIcon sx={{color:"#2196f3", position:"relative",top:"2.7px"}}/>
-                  }
-                </Box>
-              ))
-            }
-            
-            <Typography variant="h6" sx={{marginLeft:"0.3rem"}}>
-              |
-            </Typography>
-            <br/>
-            <AccessTimeIcon sx={{color:"#2196f3",marginLeft:"0.3rem",marginRight:"0.3rem"}} /> 
-            <Typography variant="h6">
-             {data?.duration} Minutes | {data?.genre}
-            </Typography>
+      <>
+      {
+        data.title!="" ?
+        <Box sx={{ display: "flex", marginTop: "20px" }}>
+          <Box
+            sx={{
+              width:"300px",
+              height:"400px",
+              position:"relative"
+            }}
+          >
+            <Image 
+              loader={()=>data?.image_url} 
+              src={data?.image_url} 
+              alt="Failed To Get Image" 
+              objectFit="cover" 
+              fill
+              style={{borderRadius: "15px"}} 
+            />
           </Box>
-          <br />
-          <Typography variant="h6">Description:</Typography>
-          <Typography variant="h6">{data?.description}</Typography>
-          <br />
-          <Typography variant="h6">Review:</Typography>
-          <Typography variant="h6">{data?.review}</Typography>
-        </Box>
-      </Box>
+          <Box sx={{ float: "left",padding: "10px", top: 0 }}>
+            <Typography gutterBottom variant="h5" sx={{ marginTop:"40px",marginBottom:"40px",fontWeight:"bold" }}>
+              {data?.title} ({data?.year})
+            </Typography>
+            <Box sx={{ fontSize: "23px",display:"flex",alignItems:"center"}}>
+              {
+                [...Array(5)].map((item,i)=>(
+                  <Box key={i}>
+                    {
+                      i<data?.rating?
+                      <Image 
+                        src={star} 
+                        alt="star" 
+                        width={20}
+                        height={20}
+                      />:
+                      <StarBorderIcon sx={{color:"#2196f3", position:"relative",top:"2.7px"}}/>
+                    }
+                  </Box>
+                ))
+              }
+              
+              <Typography variant="h6" sx={{marginLeft:"0.3rem"}}>
+                |
+              </Typography>
+              <br/>
+              <AccessTimeIcon sx={{color:"#2196f3",marginLeft:"0.3rem",marginRight:"0.3rem"}} /> 
+              <Typography variant="h6">
+              {data?.duration} Minutes | {data?.genre}
+              </Typography>
+            </Box>
+            <br />
+            <Typography variant="h6">Description:</Typography>
+            <Typography variant="h6">{data?.description}</Typography>
+            <br />
+            <Typography variant="h6">Review:</Typography>
+            <Typography variant="h6">{data?.review}</Typography>
+          </Box>
+        </Box> :
+        <>Data Not Found</>
+      }
+      </>
     
     )
 }
@@ -114,7 +120,7 @@ export const getStaticPaths=async ()=>{
     const paths=movie?.data?.data?.fetchMovies.map((item:typeID)=>({params:{moviesID:item._id}}))
     return{
         paths:paths,
-        fallback:false
+        fallback:"blocking"
     }
 }
 

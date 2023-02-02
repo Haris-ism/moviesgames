@@ -41,6 +41,9 @@ const GamesID=()=>{
     setLoading(false)
   }
     return(
+      <>
+      {
+        data.name!="" ?
         <Box style={{ display: "flex", marginTop: "20px" }}>
           <Box
             sx={{
@@ -87,7 +90,11 @@ const GamesID=()=>{
             <Typography variant="h6">Platform:</Typography>
             <Typography variant="h6">{data?.platform}</Typography>
           </Box>
-        </Box>
+        </Box> :
+        <>Data Not Found</>
+
+      }
+      </>
     )
 }
 
@@ -98,7 +105,7 @@ export const getStaticPaths=async ()=>{
   const paths=game?.data?.data?.fetchGames.map((item:typeID)=>({params:{gamesID:item._id}}))
   return{
       paths:paths,
-      fallback:false
+      fallback:"blocking"
   }
 }
 
