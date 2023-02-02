@@ -141,7 +141,6 @@ export type typePropsGames={
 }
 
 export type typeMovieDetail={
-  data:{
     _id:string
     title:string
     rating:number
@@ -151,11 +150,9 @@ export type typeMovieDetail={
     year:number
     review:string
     description:string
-  }
 }
 
 export type typeGameDetail={
-  data:{
     name:string
     genre:string
     image_url:string
@@ -164,7 +161,6 @@ export type typeGameDetail={
     platform:string
     release:number
     _id:string
-  }
 }
 
 export type typeActionEditor={

@@ -1,18 +1,45 @@
 import { getDataGame,getDataGames } from "../../utils"
 import {typeID,typeGameDetail} from "../../utils/types"
 import { GetStaticProps } from 'next'
+import { useRouter } from "next/router"
 import Image from "next/image"
 import { Box, Typography } from "@mui/material"
-import { useContext,useEffect } from "react";
+import { useContext,useEffect,useState } from "react";
 import { UserContext } from "../../statemanagement/userContext";
-const GamesID=({data}:typeGameDetail)=>{
+const GamesID=()=>{
+  const [data,setData]=useState<typeGameDetail>({
+    name:"",
+    genre:"",
+    image_url:"",
+    singlePlayer:false,
+    multiPlayer:false,
+    platform:"",
+    release:0,
+    _id:""
+  })
+  const router=useRouter()
   const context = useContext(UserContext)
   const loading = context.loading
   const setLoading=context.setLoading
+  let id=router.query.gamesID
   useEffect(()=>{
-    setLoading(false)
+    handleGet()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
+  const handleGet = async () => {
+    setLoading(true)
+    if (typeof id=="string"){
+      try {
+        const game = await getDataGame(id, "name genre image_url singlePlayer multiPlayer platform release")
+        setData(game?.data?.data?.fetchOneGame)
+      }
+      catch (err:any) {
+        alert(err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
+      }
+
+    }
+    setLoading(false)
+  }
     return(
         <Box style={{ display: "flex", marginTop: "20px" }}>
           <Box
@@ -76,24 +103,7 @@ export const getStaticPaths=async ()=>{
 }
 
 export const getStaticProps:GetStaticProps=async(context)=>{
-  let data={
-    name:"",
-    genre:"",
-    image_url:"",
-    singlePlayer:false,
-    multiPlayer:false,
-    platform:"",
-    release:0,
-    _id:""
-  }
-  if (typeof context?.params?.gamesID=="string"){
-    const game = await getDataGame(context.params.gamesID, "name genre image_url singlePlayer multiPlayer platform release")
-    data=game?.data?.data?.fetchOneGame
-  }
-
   return{
-      props:{
-          data:data
-      }
+      props:{}
   }
 }

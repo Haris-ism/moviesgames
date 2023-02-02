@@ -1,8 +1,9 @@
 
 import { getDataMovies,getDataMovie } from "../../utils"
 import {typeID,typeMovieDetail} from "../../utils/types"
-import { GetStaticProps } from 'next'
-import { useContext,useEffect } from "react"
+import { GetServerSideProps, GetStaticProps  } from 'next'
+import { useRouter } from "next/router"
+import { useContext,useEffect,useState } from "react"
 import { UserContext } from "../../statemanagement/userContext"
 import Image from 'next/image'
 import star from '../../public/star.png'
@@ -11,13 +12,40 @@ import {
 } from '@mui/material'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-const MoviesID=({data}:typeMovieDetail)=>{
+const MoviesID=()=>{
+  const [data,setData]=useState<typeMovieDetail>({
+    _id:"",
+    title:"",
+    rating:0,
+    genre:"",
+    image_url:"",
+    duration:0,
+    year:0,
+    review:"",
+    description:""
+  })
+  const router=useRouter()
+  let id=router.query.moviesID
   const context = useContext(UserContext)
   const setLoading=context.setLoading
   useEffect(()=>{
-    setLoading(false)
+    handleGet()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
+  const handleGet = async () => {
+    setLoading(true)
+    if (typeof id=="string"){
+      try {
+        const movie = await getDataMovie(id, "_id title rating genre image_url duration year review description")
+        setData(movie?.data?.data?.fetchOneMovie)
+      }
+      catch (err:any) {
+        alert(err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
+      }
+
+    }
+    setLoading(false)
+  }
     return(
       <Box sx={{ display: "flex", marginTop: "20px" }}>
         <Box
@@ -82,8 +110,6 @@ const MoviesID=({data}:typeMovieDetail)=>{
 export default MoviesID;
 
 export const getStaticPaths=async ()=>{
-  console.log("moviesid")
-
     const movie = await getDataMovies("_id")
     const paths=movie?.data?.data?.fetchMovies.map((item:typeID)=>({params:{moviesID:item._id}}))
     return{
@@ -92,25 +118,8 @@ export const getStaticPaths=async ()=>{
     }
 }
 
-export const getStaticProps:GetStaticProps=async(context)=>{
-  let data={
-    _id:"",
-    title:"",
-    rating:0,
-    genre:"",
-    image_url:"",
-    duration:0,
-    year:0,
-    review:"",
-    description:""
-  }
-  if (typeof context?.params?.moviesID=="string"){
-    const movie = await getDataMovie(context?.params?.moviesID, "_id title rating genre image_url duration year review description")
-    data = movie?.data?.data?.fetchOneMovie
-  }
+export const getStaticProps:GetStaticProps =async()=>{
     return{
-        props:{
-            data:data
-        }
+        props:{}
     }
 }
