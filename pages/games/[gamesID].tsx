@@ -4,7 +4,7 @@ import { GetStaticProps } from 'next'
 import { useRouter } from "next/router"
 import Image from "next/image"
 import { Box, Typography } from "@mui/material"
-import { useContext,useEffect,useState } from "react";
+import { useContext,useEffect,useState,useRef } from "react";
 import { UserContext } from "../../statemanagement/userContext";
 const GamesID=()=>{
   const [data,setData]=useState<typeGameDetail>({
@@ -17,6 +17,7 @@ const GamesID=()=>{
     release:0,
     _id:""
   })
+  const firstRender=useRef(true)
   const router=useRouter()
   const context = useContext(UserContext)
   const loading = context.loading
@@ -32,67 +33,70 @@ const GamesID=()=>{
       try {
         const game = await getDataGame(id, "name genre image_url singlePlayer multiPlayer platform release")
         setData(game?.data?.data?.fetchOneGame)
+        firstRender.current=false
       }
       catch (err:any) {
-        alert(err?.response?.data?.errors[0]?.message || "Something Went Wrong Please Try Again Later.")
+        alert("Something Went Wrong Please Try Again Later.")
+        firstRender.current=false
       }
-
     }
     setLoading(false)
   }
     return(
       <>
-      {
-        data.name!="" ?
-        <Box style={{ display: "flex", marginTop: "20px" }}>
-          <Box
-            sx={{
-              width:"300px",
-              height:"400px",
-              position:"relative"
-            }}
-          >
-            <Image 
-              loader={()=>data?.image_url}
-              src={data?.image_url} 
-              alt="Failed To Get Image"
-              fill
-              objectFit="cover"
-              style={{ borderRadius: "15px" }} 
-            />
-          </Box>
-          <Box 
-            sx={{ 
-              float: "left", 
-              fontSize: "20px", 
-              padding: "10px", 
-              top: 0, 
-              display: "inline-block" 
-            }}
-          >
-            <Typography gutterBottom variant="h5" sx={{ marginTop:"40px",marginBottom:"40px",fontWeight:"bold" }}>{data?.name} ({data?.release})</Typography>
-            <Typography variant="h6">Type:</Typography>
-            <Typography variant="h6">
-              {
-                data?.singlePlayer ? 
-                `Singleplayer` : 
-                ''
-              } {
-                data?.multiPlayer ? 
-                `Multiplayer` : 
-                ''
-                }
-            </Typography>
-            <br />
-            <Typography variant="h6">Genre:</Typography>
-            <Typography variant="h6">{data?.genre}</Typography>
-            <br />
-            <Typography variant="h6">Platform:</Typography>
-            <Typography variant="h6">{data?.platform}</Typography>
-          </Box>
-        </Box> :
-        <>Data Not Found</>
-
+      { !firstRender.current?
+          data.name!="" ?
+          <Box style={{ display: "flex", marginTop: "20px" }}>
+            <Box
+              sx={{
+                width:"300px",
+                height:"400px",
+                position:"relative"
+              }}
+            >
+              <Image 
+                loader={()=>data?.image_url}
+                src={data?.image_url} 
+                alt="Failed To Get Image"
+                fill
+                objectFit="cover"
+                style={{ borderRadius: "15px" }} 
+              />
+            </Box>
+            <Box 
+              sx={{ 
+                float: "left", 
+                fontSize: "20px", 
+                padding: "10px", 
+                top: 0, 
+                display: "inline-block" 
+              }}
+            >
+              <Typography gutterBottom variant="h5" sx={{ marginTop:"40px",marginBottom:"40px",fontWeight:"bold" }}>{data?.name} ({data?.release})</Typography>
+              <Typography variant="h6">Type:</Typography>
+              <Typography variant="h6">
+                {
+                  data?.singlePlayer ? 
+                  `Singleplayer` : 
+                  ''
+                } {
+                  data?.multiPlayer ? 
+                  `Multiplayer` : 
+                  ''
+                  }
+              </Typography>
+              <br />
+              <Typography variant="h6">Genre:</Typography>
+              <Typography variant="h6">{data?.genre}</Typography>
+              <br />
+              <Typography variant="h6">Platform:</Typography>
+              <Typography variant="h6">{data?.platform}</Typography>
+            </Box>
+          </Box> :
+          <Typography variant="h5" sx={{display:"flex",justifyContent:"center"}}>
+            Data Not Found
+          </Typography> :
+        null
       }
       </>
     )
