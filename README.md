@@ -8,7 +8,9 @@ Stacks Before:
 - Ant Design
 - GraphQL
 - Client Side Rendering
+
 After Migration     : [https://haris-ism-movies-games.vercel.app/](https://haris-ism-movies-games.vercel.app/)
+
 Source              : [https://github.com/Haris-ism/moviesgames](https://github.com/Haris-ism/moviesgames)
 
 Stacks After: 
@@ -19,6 +21,7 @@ Stacks After:
 - Server Side Rendering
 
 Before Migration    : [https://haris-ism.netlify.app](https://haris-ism.netlify.app)
+
 Source              : [https://github.com/Haris-ism/MoviesGamesRecap](https://github.com/Haris-ism/MoviesGamesRecap)
 
 ## Movies and Games Web App
